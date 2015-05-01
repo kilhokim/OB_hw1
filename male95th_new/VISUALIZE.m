@@ -1,7 +1,9 @@
 function y = VISUALIZE(fignum, L, P);
 
+% Sensor coordinates to the body posture
 s = LOCATE(L, P); 
 
+% Head coordinates
 h = s(22:29, :);
 
 plot([s(1,1) s(2,1) s(3,1) s(4,1) s(5,1) s(6,1) s(7,1) s(8,1) ...
@@ -13,6 +15,7 @@ plot([s(1,1) s(2,1) s(3,1) s(4,1) s(5,1) s(6,1) s(7,1) s(8,1) ...
    
 plot([s(13,1) h(1,1)], [s(13,2) h(1,2)], '.-');
 
+% Plot head
 plot([h(1,1) h(2,1) h(3,1) h(4,1) h(5,1) h(6,1) h(7,1) h(8,1) h(1,1)], ...
    [h(1,2) h(2,2) h(3,2) h(4,2) h(5,2) h(6,2) h(7,2) h(8,2) h(1,2)], '.-');
     

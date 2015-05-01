@@ -15,6 +15,7 @@ am = input('Asymmetry Multiplier = ');
 cm = input('Coupling Multiplier = ');
 fm = input('Frequency Multiplier = ');
 
+% The coordinates of the target
 T = [X_tar Y_tar];
 
 % Obstacle Configuration: Box
@@ -30,7 +31,9 @@ T = [X_tar Y_tar];
 
 %B = [25 105 20 105];
 
-B =[X_tar Y_tar 10 Y_tar];
+% Coordinates of the obstacle is automatically
+% defined, referring to the target locations
+B =[X_tar Y_tar 10 Y_tar]; % [X, Y, width, height]
 
 % Obstacle Configuration: Sphere
 % C = [x y r; x y r; ...]
@@ -45,7 +48,8 @@ YY = num2str(floor(Y_tar/10)*10);
 cell_name = ['CELL_X' XX 'Y' YY];
 cell_name = strrep(cell_name, '-', 'N');
 
-postures = load(cell_name);
+% Load postures data from CELL_X##Y##
+postures = load(fullfile('CELL', cell_name));
 
 temp = size(postures);
 numP = temp(1);
@@ -69,14 +73,18 @@ TPLOT(T);
 
 BPLOT(B,1);
 
-fill([X_tar X_tar 73 73 X_tar],[Y_tar 185 185 Y_tar Y_tar], 'r');
+%fill([X_tar X_tar 73 73 X_tar],[Y_tar 185 185 Y_tar Y_tar], 'r');
 
 % draw all postures in the loaded cell
 
-for i=1:1,
+% Plot for every posture in postures array
+for i=1:1:numP
    posture = postures(i,:);
+   % Checking collision 
+   % if there's collision, potential > 0
    potential = POTENTIAL2(L, posture, B)
    
+   % Visualize plot only if there is no collision
    if (potential == 0)
       VISUALIZE(1, L, posture);
     
@@ -84,15 +92,29 @@ for i=1:1,
    
 end;
 
+% FIXME: Why 63 and 175??
 for x = X_tar:63,
     for y = Y_tar:175,
+        % Calculate the Rcommended Weight Limit(RWL) 
+        % RWL = LC x HM x VM x DM x AM x FM x CM
+        % HM, the Horizontal Multiplier factor
+        % VM, the Vertical Multiplier factor
+        % DM, the Distance Multiplier factor
+        % FM, the Frequency Multiplier factor
+        % AM, the Asymmetric Multiplier factor
+        % CM, the Coupling Multiplier factor
+        % RWL, the Recommended Weight Limit
         RWL = 23 * (25/x) * (1-(0.003 * abs(y-75))) * (0.82 + (4.5/(y-Y_tar))) * am * cm * fm;
+        % If RWL is over one third of load target weight,
+        % Plot the imaginary target
         if (RWL > (1/3 * load_tar))
+            % Fill the imaginary target with green
             fill([x x x+10 x+10 x], [y y+10 y+10 y y], 'g');
         end;
     end;
 end;
 
+% Fill the target with blue
 fill([X_tar X_tar+10 X_tar+10 X_tar X_tar], [Y_tar Y_tar Y_tar+10 Y_tar+10 Y_tar],'b');
 
 

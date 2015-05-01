@@ -1,4 +1,4 @@
-function y = locate(L, P);
+function y = LOCATE(L, P);
 
 %  This function is to place sensors to a posture P 
 
