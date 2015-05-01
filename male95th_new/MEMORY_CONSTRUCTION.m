@@ -1,6 +1,6 @@
 function y = MEMORY_CONSTRUCTION(num_trials);
 
-stature = 160;  % Set stature value
+stature = 185;  % Set stature value
 L = LINK(stature);  % Calculate lengths for each body link [L1, L2, L3, L4, L5, HeadNeck]
 thresh = 20;
 
