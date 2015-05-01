@@ -83,7 +83,7 @@ fill([X_tar X_tar+10 X_tar+10 X_tar X_tar], [Y_tar Y_tar Y_tar+10 Y_tar+10 Y_tar
 % draw all postures in the loaded cell
 
 % Plot for every posture in postures array
-for i=1:1:numP
+for i=1:1:1
    posture = postures(i,:);
    % Checking collision 
    % if there's collision, potential > 0

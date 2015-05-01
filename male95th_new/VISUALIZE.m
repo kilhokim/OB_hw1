@@ -6,6 +6,12 @@ s = LOCATE(L, P);
 % Head coordinates
 h = s(22:29, :);
 
+% ADDED: Front body coordinates
+f = s(30:33, :);
+
+% ADDED: Back body coordinates
+b = s(34:37, :);
+
 plot([s(1,1) s(2,1) s(3,1) s(4,1) s(5,1) s(6,1) s(7,1) s(8,1) ...
       s(9,1) s(10,1) s(11,1) s(12,1) s(13,1) s(14,1) s(15,1) s(16,1) ...
    s(17,1) s(18,1) s(19,1) s(20,1) s(21,1)], ...
@@ -19,6 +25,13 @@ plot([s(13,1) h(1,1)], [s(13,2) h(1,2)], '.-');
 plot([h(1,1) h(2,1) h(3,1) h(4,1) h(5,1) h(6,1) h(7,1) h(8,1) h(1,1)], ...
    [h(1,2) h(2,2) h(3,2) h(4,2) h(5,2) h(6,2) h(7,2) h(8,2) h(1,2)], '.-');
     
+% ADDED: Plot the front and back of the body
+plot([f(1,1) f(2,1) f(3,1) f(4,1)], ...
+     [f(1,2) f(2,2) f(3,2) f(4,2)], '.-');
+plot([b(1,1) b(2,1) b(3,1) b(4,1)], ...
+     [b(1,2) b(2,2) b(3,2) b(4,2)], '.-');
+
+
 com_loc = COM_LOCATION(L, P);
 
 %plot([com_loc(1) com_loc(1)], [com_loc(2) com_loc(2)], '*');

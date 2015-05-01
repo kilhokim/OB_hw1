@@ -1,6 +1,8 @@
 function y = LOCATE(L, P);
-
 %  This function is to place sensors to a posture P 
+
+% ADDED: The thickness of the body:
+th = 5;
 
 L1 = L(1);
 L2 = L(2);
@@ -21,6 +23,10 @@ r = 10;
 
 s1x = 0;
 s1y = 0;
+b1x = s1x + th*cos(pi/2 + t1);
+b1y = s1y + th*sin(pi/2 + t1);
+f1x = s1x - th*cos(pi/2 + t1);
+f1y = s1y - th*sin(pi/2 + t1);
 
 s5x = L1*cos(t1);
 s5y = L1*sin(t1);
@@ -40,13 +46,24 @@ s21y = s17y + L5*sin(t1+t2+t3+t4+t5);
 
 s2x = s1x + 1/4*(s5x - s1x);
 s2y = s1y + 1/4*(s5y - s1y);
+b2x = s2x + th*cos(pi/2 + t1);
+b2y = s2y + th*sin(pi/2 + t1);
+f2x = s2x - th*cos(pi/2 + t1);
+f2y = s2y - th*sin(pi/2 + t1);
 
 s3x = s1x + 2/4*(s5x - s1x);
 s3y = s1y + 2/4*(s5y - s1y);
+b3x = s3x + th*cos(pi/2 + t1);
+b3y = s3y + th*sin(pi/2 + t1);
+f3x = s3x - th*cos(pi/2 + t1);
+f3y = s3y - th*sin(pi/2 + t1);
 
 s4x = s1x + 3/4*(s5x - s1x);
 s4y = s1y + 3/4*(s5y - s1y);
-
+b4x = s4x + th*cos(pi/2 + t1);
+b4y = s4y + th*sin(pi/2 + t1);
+f4x = s4x - th*cos(pi/2 + t1);
+f4y = s4y - th*sin(pi/2 + t1);
 
 s6x = s5x + 1/4*(s9x - s5x);
 s6y = s5y + 1/4*(s9y - s5y);
@@ -115,5 +132,7 @@ s20y = s17y + 3/4*(s21y - s17y);
 y = [s1x s1y; s2x s2y; s3x s3y; s4x s4y; s5x s5y; s6x s6y; s7x s7y; s8x s8y; ...
       s9x s9y; s10x s10y; s11x s11y; s12x s12y; s13x s13y; s14x s14y; s15x s15y; ...
       s16x s16y; s17x s17y; s18x s18y; s19x s19y; s20x s20y; s21x s21y; ...
-      h1x h1y; h2x h2y; h3x h3y; h4x h4y; h5x h5y; h6x h6y; h7x h7y; h8x h8y];
+      h1x h1y; h2x h2y; h3x h3y; h4x h4y; h5x h5y; h6x h6y; h7x h7y; h8x h8y; ...
+      f1x f1y; f2x f2y; f3x f3y; f4x f4y; ...
+      b1x b1y; b2x b2y; b3x b3y; b4x b4y ];
    
