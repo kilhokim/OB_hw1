@@ -11,9 +11,9 @@ L = LINK(stature);
 X_tar = input('X_tar = ');
 Y_tar = input('Y_tar = ');
 load_tar = input('Load mass = ');
-am = input('Asymmetry Multiplier = ');
-cm = input('Coupling Multiplier = ');
-fm = input('Frequency Multiplier = ');
+%am = input('Asymmetry Multiplier = ');
+%cm = input('Coupling Multiplier = ');
+%fm = input('Frequency Multiplier = ');
 
 % The coordinates of the target (width=10, height=10)
 T = [X_tar Y_tar];
@@ -98,8 +98,8 @@ for i=1:1:1
 end;
 
 % FIXME: Why 63 and 175??
-for x = X_tar:63,
-    for y = Y_tar:175,
+%for x = X_tar:63,
+%    for y = Y_tar:175,
         % Calculate the Recommended Weight Limit(RWL) 
         % RWL = LC x HM x VM x DM x AM x FM x CM
         % HM, the Horizontal Multiplier factor
@@ -109,15 +109,15 @@ for x = X_tar:63,
         % AM, the Asymmetric Multiplier factor
         % CM, the Coupling Multiplier factor
         % RWL, the Recommended Weight Limit
-        RWL = 23 * (25/x) * (1-(0.003 * abs(y-75))) * (0.82 + (4.5/(y-Y_tar))) * am * cm * fm;
+        %RWL = 23 * (25/x) * (1-(0.003 * abs(y-75))) * (0.82 + (4.5/(y-Y_tar))) * am * cm * fm;
         % If RWL is over one third of load target weight,
         % Plot the imaginary target
-        if (RWL > (1/3 * load_tar))
+        %if (RWL > (1/3 * load_tar))
             % Fill the imaginary target with green
             %fill([x x x+10 x+10 x], [y y+10 y+10 y y], 'g');
-        end;
-    end;
-end;
+        %end;
+%    end;
+%end;
 
 
 
