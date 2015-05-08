@@ -152,6 +152,7 @@ h2y = h1y + sin(t1+t2+t3)*0 + cos(t1+t2+t3)*(HeadDepth/2);
 h3x = (h2x + h4x)/2;
 h3y = (h2y + h4y)/2;
 
+% Eye location: h7
 h7x = (h6x + h8x)/2;
 h7y = (h6y + h8y)/2;
 

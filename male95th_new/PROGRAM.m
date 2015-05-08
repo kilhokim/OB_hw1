@@ -6,7 +6,7 @@ clear all;
 stature = 185;
 L = LINK(stature);
 
-% ���� �Է�
+% input variables
 
 X_tar = input('X_tar = ');
 Y_tar = input('Y_tar = ');
@@ -92,6 +92,7 @@ for i=1:1:1
    % Visualize plot only if there is no collision
    %if (potential == 0)
       VISUALIZE(1, L, posture);
+      r = REBA(L, posture, Y_tar, load_tar);
     
    %end;
    
