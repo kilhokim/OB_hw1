@@ -39,7 +39,7 @@ B = [X_tar 0 10 Y_tar;
 % Obstacle Configuration: Sphere
 % C = [x y r; x y r; ...]
 
-C = [];
+C = [10 30 10];
 
 % Loading the relevant cell
 
@@ -67,12 +67,11 @@ grid on;
 hold on;
 
 % Draw Target
-
 TPLOT(T);
 
 % Draw Obstacle Configuration 
-
 BPLOT(B,1);
+CPLOT(C,1);
 
 %fill([X_tar X_tar 73 73 X_tar],[Y_tar 185 185 Y_tar Y_tar], 'r');
 
@@ -91,7 +90,7 @@ for i=1:1:numPlot
    posture = postures(i,:);
    % Checking collision 
    % if there's collision, potential > 0
-   potential = POTENTIAL2(L, posture, B);
+   potential = POTENTIAL2(L, posture, B, C);
    
    % Visualize plot only if there is no collision
    %if (potential == 0)

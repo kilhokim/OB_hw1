@@ -1,5 +1,5 @@
 % evaluate the potential function for a posture
-function y = POTENTIAL2(L, P, B);
+function y = POTENTIAL2(L, P, B, C);
 
 % Sensor coordinates to the body posture
 s = LOCATE(L, P);
@@ -14,18 +14,21 @@ temp = size(B);
 % (should be 1 at this case)
 numB = temp(1);
 
+temp = size(C);
+numC = temp(1);
+
 totalpt = 0;
 
 for i=1:numS,
+   Sx = s(i, 1);
+   Sy = s(i, 2);
+   
    for j=1:numB,
       
       Bx = B(j, 1);
       By = B(j, 2);
       Bw = B(j, 3);
       Bh = B(j, 4);
-      
-      Sx = s(i, 1);
-      Sy = s(i, 2);
       
       % The center of the obstacle
       BCenterX = Bx + Bw/2;
@@ -39,7 +42,7 @@ for i=1:numS,
          disty = abs(Sy - BCenterY);
          
          % Calculate the squared distance 
-         % between the sensor and the center of obstacle
+         % between the sensor and the edge of obstacle
          pt = (Bh/2 - disty)^2 + (Bw/2 - distx)^2;
                   
          totalpt = totalpt + pt;
@@ -47,6 +50,27 @@ for i=1:numS,
       end;
       
    end;  
+   
+   for j=1:numC
+       Cx = C(j,1);
+       Cy = C(j,2);
+       Cr = C(j,3);
+       
+       % If the distance between (Sx,Sy) and (Cx,Cy) is shorter than Cr
+       % = if the sensor location is within the range of circular obstacle:
+       if norm([Sx Sy] - [Cx Cy]) <= Cr^2
+           distx = abs(Sx - Cx);
+           disty = abs(Sy - Cy);
+           
+           % Calculate the squared distance 
+           % between the sensor and the edge of obstacle
+           pt = (Cr - disty)^2 + (Cr - distx)^2;
+           
+           totalpt = totalpt + pt;
+       end
+       
+       
+   end
 end;
 
 y = totalpt;
