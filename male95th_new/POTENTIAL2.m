@@ -64,7 +64,7 @@ for i=1:numS,
            
            % Calculate the squared distance 
            % between the sensor and the edge of obstacle
-           pt = (Cr - disty)^2 + (Cr - distx)^2;
+           pt = Cr^2 - (distx^2 + disty^2);
            
            totalpt = totalpt + pt;
        end
