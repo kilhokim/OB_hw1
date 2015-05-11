@@ -58,10 +58,10 @@ numP = temp(1);
 % Draw World
 
 figure (1);
-axis([-60 140 0 200]);
+axis([-60 140 0 240]);
 
 set(gca, 'Xtick', -60:10:140);
-set(gca, 'Ytick', 0:10:200);
+set(gca, 'Ytick', 0:10:240);
 
 grid on;
 hold on;
@@ -82,8 +82,12 @@ fill([X_tar X_tar+10 X_tar+10 X_tar X_tar], [Y_tar Y_tar Y_tar+10 Y_tar+10 Y_tar
 
 % draw all postures in the loaded cell
 
+% Change the value below to set the number of postures
+numPlot = 1;
+REBAs = zeros(numPlot);
+
 % Plot for every posture in postures array
-for i=1:1:1
+for i=1:1:numPlot
    posture = postures(i,:);
    % Checking collision 
    % if there's collision, potential > 0
@@ -92,7 +96,7 @@ for i=1:1:1
    % Visualize plot only if there is no collision
    %if (potential == 0)
       VISUALIZE(1, L, posture);
-      r = REBA(L, posture, Y_tar, load_tar);
+      REBAs(i) = REBA(L, posture, Y_tar, load_tar);
     
    %end;
    

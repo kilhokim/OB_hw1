@@ -30,15 +30,14 @@ for i=1:num_trials,
     % or the hand location isn't on left or under (5, 0)
     % or the H-S distance is shorter than 20,
     % generate a new random posture and calculate values again:
-    while ((COM_LOC(1)>15) | (COM_LOC(1)<-5) | (HAND_LOC(1)<5) | (H_S_DIST < 20) | (HAND_LOC(2)<=0) ), 
+    while ((COM_LOC(1)>15) || (COM_LOC(1)<-5) || (HAND_LOC(1)<5) || (H_S_DIST < 20) || (HAND_LOC(2)<=0) ), 
 
        P = RANDOM_POSTURE;
        COM_LOC = COM_LOCATION(L,P);
        HAND_LOC = HAND_LOCATION(L,P);
-
        SHOULDER_LOC = SHOULDER_LOCATION(L,P);
 
-        H_S_DIST = norm(HAND_LOC - SHOULDER_LOC);
+       H_S_DIST = norm(HAND_LOC - SHOULDER_LOC);
 
 
     end;  
