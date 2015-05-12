@@ -13,7 +13,7 @@ function r = REBA( L, P, Y_tar, load_tar )
     t5 = P(5);
     
     s = LOCATE(L, P);
-    num_s = 21;
+    num_s = 41;
     eye_x = s(num_s+7, 1);
     eye_y = s(num_s+7, 2);
     % Neck angle - calculated with eye location

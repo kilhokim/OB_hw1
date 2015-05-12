@@ -1,15 +1,16 @@
 function y = VISUALIZE(fignum, L, P);
 
-num_s = 21;
+num_s = 41;
+pos_neck = 25;
 num_h = 8;
-num_f = 21;
-num_b = 21;
+num_f = 41;
+num_b = 41;
 
 % Sensor coordinates to the body posture
 s = LOCATE(L, P); 
 
 % Head coordinates
-h = s(num_s+1:num_s+8, :);
+h = s(num_s+1:num_s+num_h, :);
 
 % ADDED: Front body coordinates
 f = s(num_s+num_h+1:num_s+num_h+num_f, :);
@@ -19,7 +20,7 @@ b = s(num_s+num_h+num_f+1:num_s+num_h+num_f+num_b, :);
 
 plot(s(1:num_s,1), s(1:num_s,2), '.-');
    
-plot([s(13,1) h(1,1)], [s(13,2) h(1,2)], '.-');
+plot([s(pos_neck,1) h(1,1)], [s(pos_neck,2) h(1,2)], '.-');
 
 % Plot head
 plot([transpose(h(1:num_h,1)) h(1,1)], [transpose(h(1:num_h,2)) h(1,2)], '.-');
