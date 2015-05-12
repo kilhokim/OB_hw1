@@ -1,8 +1,12 @@
 % evaluate the potential function for a posture
-function y = POTENTIAL2(L, P, B, C);
+function y = POTENTIAL2(L, P, B, C, flag_volume, R)
 
 % Sensor coordinates to the body posture
-s = LOCATE(L, P);
+if flag_volume == 1
+    s = LOCATE_VOL(L, P, R);
+else
+    s = LOCATE_WOVOL(L, P);
+end
 flag = 0;
 
 temp = size(s);

@@ -1,12 +1,11 @@
-function y = LOCATE(L, P);
+function y = LOCATE_VOL(L, P, R)
 %  This function is to place sensors to a posture P 
 
-% ADDED: The thickness of the body:
-r1 = 5.53;
-r2 = 8.69;
-r3 = 13.36;
-r4 = 3.59;
-r5 = 2.37;
+r1 = R(1);
+r2 = R(2);
+r3 = R(3);
+r4 = R(4);
+r5 = R(5);
 
 L1 = L(1);
 L2 = L(2);

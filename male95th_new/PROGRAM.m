@@ -6,11 +6,20 @@ clear all;
 stature = 185;
 L = LINK(stature);
 
+% ADDED: The thickness of the body:
+r1 = 5.53;
+r2 = 8.69;
+r3 = 13.36;
+r4 = 3.59;
+r5 = 2.37;
+R = [r1 r2 r3 r4 r5];
+
 % input variables
 
 X_tar = input('X_tar = ');
 Y_tar = input('Y_tar = ');
 load_tar = input('Load mass = ');
+flag_volume = input('Add volume to the body(TRUE=1, FALSE=0) = ');
 %am = input('Asymmetry Multiplier = ');
 %cm = input('Coupling Multiplier = ');
 %fm = input('Frequency Multiplier = ');
@@ -82,21 +91,20 @@ fill([X_tar X_tar+10 X_tar+10 X_tar X_tar], [Y_tar Y_tar Y_tar+10 Y_tar+10 Y_tar
 % draw all postures in the loaded cell
 
 % Change the value below to set the number of postures
-numPlot = 1;
-REBAs = zeros(numPlot);
+numPlot = 3;
+REBAs = zeros(numPlot, 1);
 
 % Plot for every posture in postures array
 for i=1:1:numPlot
    posture = postures(i,:);
    % Checking collision 
    % if there's collision, potential > 0
-   potential = POTENTIAL2(L, posture, B, C);
+   potential = POTENTIAL2(L, posture, B, C, flag_volume, R);
    
    % Visualize plot only if there is no collision
    %if (potential == 0)
-      VISUALIZE(1, L, posture);
+      VISUALIZE(1, L, posture, flag_volume, R);
       REBAs(i) = REBA(L, posture, Y_tar, load_tar);
-    
    %end;
    
 end;

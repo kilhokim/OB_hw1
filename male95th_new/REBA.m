@@ -1,7 +1,5 @@
 function r = REBA( L, P, Y_tar, load_tar )
 % Calculate REBA score for the input posture
-    
-    
 
     % Knee angle
     t2 = 180 - P(2);
@@ -12,7 +10,7 @@ function r = REBA( L, P, Y_tar, load_tar )
     % Lower arm angle
     t5 = P(5);
     
-    s = LOCATE(L, P);
+    s = LOCATE_WOVOL(L, P);
     num_s = 41;
     eye_x = s(num_s+7, 1);
     eye_y = s(num_s+7, 2);
