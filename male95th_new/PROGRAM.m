@@ -48,7 +48,7 @@ B = [X_tar 0 10 Y_tar;
 % Obstacle Configuration: Sphere
 % C = [x y r; x y r; ...]
 
-C = [10 30 10];
+C = [30 80 10];
 
 % Loading the relevant cell
 
@@ -99,13 +99,13 @@ for i=1:1:numPlot
    posture = postures(i,:);
    % Checking collision 
    % if there's collision, potential > 0
-   potential = POTENTIAL2(L, posture, B, C, flag_volume, R);
+   potential = POTENTIAL2(L, posture, B, C, flag_volume, R)
    
    % Visualize plot only if there is no collision
-   %if (potential == 0)
+   if (potential == 0)
       VISUALIZE(1, L, posture, flag_volume, R);
       REBAs(i) = REBA(L, posture, Y_tar, load_tar);
-   %end;
+   end;
    
 end;
 

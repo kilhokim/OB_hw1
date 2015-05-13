@@ -62,7 +62,7 @@ for i=1:numS,
        
        % If the distance between (Sx,Sy) and (Cx,Cy) is shorter than Cr
        % = if the sensor location is within the range of circular obstacle:
-       if norm([Sx Sy] - [Cx Cy]) <= Cr^2
+       if norm([Sx Sy] - [Cx Cy]) <= Cr
            distx = abs(Sx - Cx);
            disty = abs(Sy - Cy);
            
