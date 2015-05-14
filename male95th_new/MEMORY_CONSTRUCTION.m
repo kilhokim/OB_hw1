@@ -1,16 +1,14 @@
-function y = MEMORY_CONSTRUCTION(num_trials);
+function y = MEMORY_CONSTRUCTION(stature, num_trials, thresh)
 
-stature = 185;  % Set stature value
 L = LINK(stature);  % Calculate lengths for each body link [L1, L2, L3, L4, L5, HeadNeck]
-thresh = 20;
 
 num_registered_posture = 0;
-rec =[];
+rec = [];
 
 for i=-60:10:130,
    for j=0:10:230,
       
-      cell_name = ['CELL_X' num2str(i) 'Y' num2str(j)];
+      cell_name = ['CELL_S' num2str(stature) '_X' num2str(i) 'Y' num2str(j)];
       cell_name = strrep(cell_name, '-', 'N');
       eval([cell_name ' = load(' ''''  fullfile('CELL', cell_name)  '''' ');']);
    end;
@@ -45,16 +43,16 @@ for i=1:num_trials,
     XX = num2str(floor(HAND_LOC(1)/10)*10);  % Round down at unit digit (to make it as a multiple of 10)
     YY = num2str(floor(HAND_LOC(2)/10)*10);  % Round down at unit digit (to make it as a multiple of 10)
 
-    cell_name = ['CELL_X' XX 'Y' YY];
+    cell_name = ['CELL_S' num2str(stature) '_X' XX 'Y' YY];
     cell_name = strrep(cell_name, '-', 'N');
 
-    % Save CELL_X##Y## matrix as a temporary matrix a
+    % Save CELL_S###_X##Y## matrix as a temporary matrix a
     eval(['a = ' cell_name ';']); 
 
     temp = size(a);
 
     if (temp(1) == 0),
-       % Add a new row to CELL_X##Y## matrix with [p1, p2, p3, p4, p5, h1, h2]
+       % Add a new row to CELL_S###_X##Y## matrix with [p1, p2, p3, p4, p5, h1, h2]
        eval([cell_name ' = [' cell_name ' ; ' num2str(P) ' ' num2str(HAND_LOC) '];']);
     end;
 
@@ -77,7 +75,7 @@ for i=1:num_trials,
 
        % If the flag is still 0, repeat the same procedure
        if (flag==0),
-          % Add a new row to CELL_X##Y## matrix with [p1, p2, p3, p4, p5, h1, h2]
+          % Add a new row to CELL_S###_X##Y## matrix with [p1, p2, p3, p4, p5, h1, h2]
           eval([cell_name ' = [' cell_name ' ; ' num2str(P) ' ' num2str(HAND_LOC) '];']);
 
           % And increase the number of registered postures by 1
@@ -96,11 +94,11 @@ for i=1:num_trials,
 end;
 
 
-% Write CELL_X##Y## matrices to file
+% Write CELL_S###_X##Y## matrices to file
 for i=-60:10:130,
    for j=0:10:230,
       
-      cell_name = ['CELL_X' num2str(i) 'Y' num2str(j)];
+      cell_name = ['CELL_S' num2str(stature) '_X' num2str(i) 'Y' num2str(j)];
       cell_name = strrep(cell_name, '-', 'N');
       
       haha = fopen(fullfile('CELL', cell_name),'w');
