@@ -7,5 +7,41 @@
 % Industrial Engineering, Seoul National University
 % **************************************************************
 
-1. MBPP í”„ë¡œê·¸ëž¨ì˜ ì „ì²´ êµ¬ì„±
+1. MBPP ÇÁ·Î±×·¥ ÀüÃ¼ ±¸¼º
+a) ¸Þ¸ð¸® ¹× posture ÀúÀå¼Ò °ü·Ã ÇÔ¼ö
+ - CELL_CONSTRUCTION : ºó CELL(¸Þ¸ð¸®) »ý¼º
+ - RANDOM_POSTURE : ÇÏ³ªÀÇ posture ·£´ý »ý¼º
+ - MEMORY_CONSTRUCTION : ·£´ý »ý¼ºÇÑ posture¸¦ CELL¿¡ ÀúÀå
+b) ½ÅÃ¼ ºÎÀ§ º° ±æÀÌ ¹×  À§Ä¡ÁÂÇ¥ °è»ê °ü·Ã ÇÔ¼ö
+ - COM_LOCATION : center of mass À§Ä¡ ÁÂÇ¥ °è»ê
+ - HAND_LOCATION : ¼ÕÀÇ À§Ä¡ ÁÂÇ¥ °è»ê 
+ - SHOULDER_LOCATION : ¾î±úÀÇ À§Ä¡ ÁÂÇ¥ °è»ê 
+ - LINK : (½ÅÀå¿¡ ºñ·ÊÇÏ¿©) ½ÅÃ¼ ºÎÀ§ º° ±æÀÌ °è»ê
+ - THICKNESS : (¼ºº° ¹× ¿¬·É´ë¿¡ µû¸¥) ½ÅÃ¼ ºÎÀ§ º° ¹ÝÁö¸§ °è»ê 
+ - LOCATE_VOL : (½ÅÃ¼ ºÎÇÇ¸¦ °í·ÁÇÒ ¶§ÀÇ) ½ÅÃ¼ »óÀÇ ¼¾¼­ À§Ä¡ ÁÂÇ¥ °è»ê
+ - LOCATE_WOVOL : (½ÅÃ¼ ºÎÇÇ¸¦ °í·ÁÇÏÁö ¾ÊÀ» ¶§ÀÇ) ½ÅÃ¼ »óÀÇ ¼¾¼­ À§Ä¡ ÁÂÇ¥ °è»ê
+c) Potential ¹× REBA Á¡¼ö °è»ê °ü·Ã ÇÔ¼ö
+ - POTENTIAL2 : ½ÅÃ¼ ¼¾¼­ÀÇ Àå¾Ö¹°¿¡ ´ëÇÑ potential °è»ê 
+ - REBA : ÁÖ¾îÁø posture¿¡ ´ëÇÑ REBA Á¡¼ö °è»ê 
+d) ½Ã°¢È­ °ü·Ã ÇÔ¼ö
+ - BPLOT : Á÷»ç°¢Çü Àå¾Ö¹° plot
+ - CPLOT : ¿øÇü Àå¾Ö¹° plot
+ - TPLOT : ¸ñÇ¥¹° plot
+ - VISUALIZE : ½ÅÃ¼ »óÀÇ ¼¾¼­ plot
+e) PROGRAM : ¸ÞÀÎ ÇÁ·Î±×·¥
 
+2. MBPP ÇÁ·Î±×·¥ »ç¿ë¹ý
+a) PROGRAM ÇÔ¼ö¸¦ ½ÇÇà
+b) ½ÅÃ¼ÀÇ ½ÅÀå(stature)À» cm ´ÜÀ§·Î ÀÔ·Â
+c) ÀÔ·ÂÇÑ ½ÅÀå¿¡ ´ëÇÑ CELLÀÌ »çÀü¿¡ »ý¼ºµÇ¾î ÀÖÁö ¾ÊÀº °æ¿ì, 
+ - ÇöÀç Æú´õ¸¦ ±âÁØÀ¸·Î ./CELL Æú´õ¸¦ ÀÚµ¿À¸·Î »ý¼º
+ - ./CELL Æú´õ ³»¿¡, ¼ÕÀÌ À§Ä¡ÇÏ´Â x,y ÁÂÇ¥ º° CELL ÆÄÀÏ ÀÚµ¿ »ý¼º
+ - posture ·£´ý »ý¼º È½¼ö(number of trials) ¹× threshold ÀÔ·Â
+ - ÀÔ·ÂÇÑ ¼³Á¤¿¡ µû¶ó ·£´ýÇÑ posture¸¦ »ý¼ºÇÏ¿© CELL¿¡ ÀúÀå
+d) °ú¾÷ À¯Çü ¼±ÅÃ (¹ÝµµÃ¼ °øÀå, °è´Ü, ÀÚµ¿Â÷ °øÀå Áß ÅÃÀÏ)
+e) ¼ºº° ¼±ÅÃ (³²¼º, ¿©¼º)
+f) ³ªÀÌ ÀÔ·Â
+g) ¸ñÇ¥¹°ÀÇ x,yÁÂÇ¥ ÀÔ·Â
+h) ¸ñÇ¥¹°ÀÇ Áú·®(kg) ÀÔ·Â
+i) ½ÅÃ¼ ºÎÇÇ¸¦ °í·ÁÇÒÁö ¿©ºÎ ¼±ÅÃ (°í·Á, °í·ÁÇÏÁö ¾ÊÀ½)
+j) potentialÀÌ 0ÀÎ ÀüÃ¼ posture plot ¹× REBA Á¡¼ö°¡ ÃÖ¼ÒÀÎ ÀÚ¼¼ plot È®ÀÎ
