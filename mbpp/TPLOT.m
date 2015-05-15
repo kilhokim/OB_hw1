@@ -1,4 +1,5 @@
-function y = TPLOT(T);
+function y = TPLOT(T)
+% Plot rectangular target object
 
 hold on;
 

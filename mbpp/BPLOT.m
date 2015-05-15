@@ -1,4 +1,5 @@
-function y = BPLOT(B, flag);
+function y = BPLOT(B, flag)
+% Plot rectangular obstacles
 
 hold on;
 
@@ -12,7 +13,7 @@ for j = 1:numB,
    w = B(j,3);
    h = B(j,4);
    
-   if (flag == 0) plot ([x x+w x+w x x], [y y y+h y+h y],'-');
+   if (flag == 0) plot([x x+w x+w x x], [y y y+h y+h y],'-');
    end;
    
    if (flag == 1) fill([x x+w x+w x x], [y y y+h y+h y],'c');

@@ -1,4 +1,6 @@
 function y = CELL_CONSTRUCTION(stature)
+% Construct cells in the ./CELL folder
+
 
 for i=-60:10:130,
    for j=0:10:230,

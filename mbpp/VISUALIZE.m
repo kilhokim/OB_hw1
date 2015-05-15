@@ -1,4 +1,5 @@
-function y = VISUALIZE(fignum, L, P, flag_volume, R);
+function y = VISUALIZE(fignum, L, P, flag_volume, R)
+% Visualize body
 
 num_s = 41;
 pos_neck = 25;

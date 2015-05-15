@@ -1,4 +1,5 @@
 function y = CPLOT(C, flag)
+% Plot circular obstacles
 
 hold on;
 
@@ -23,7 +24,3 @@ for j = 1:numC
     end
                     
 end
-
-
-end
-

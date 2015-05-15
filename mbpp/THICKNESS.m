@@ -1,5 +1,6 @@
 function R = THICKNESS(gender, age)
-% Calculate the thickness of the body, with regard to input gender and age
+% Calculate the thickness of the body to represent body volume
+% with given gender and age
 
 % The thickness of the body:
 % r1: lower leg, r2: upper leg, r3: breast, 

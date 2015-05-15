@@ -1,5 +1,5 @@
-% evaluate the potential function for a posture
 function y = POTENTIAL2(L, P, B, C, flag_volume, R)
+% Evaluate the potential function for a given posture
 
 % Sensor coordinates to the body posture
 if flag_volume == 1

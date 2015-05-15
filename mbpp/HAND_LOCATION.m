@@ -1,4 +1,5 @@
-function y = SHOULDER_LOCATION(L, P);
+function y = HAND_LOCATION(L, P)
+% Calculate the coordinates of hands
 
 
 L1 = L(1);
@@ -25,4 +26,11 @@ HipY = KneeY + L2*sin(t1+t2);
 ShoulX = HipX + L3*cos(t1+t2+t3);
 ShoulY = HipY  + L3*sin(t1+t2+t3);
 
-y = [ShoulX ShoulY];
+ElboX = ShoulX + L4*cos(t1+t2+t3+t4);
+ElboY = ShoulY + L4*sin(t1+t2+t3+t4);
+
+HandX = ElboX + L5*cos(t1+t2+t3+t4+t5);
+HandY = ElboY + L5*sin(t1+t2+t3+t4+t5);
+
+
+y = [HandX HandY];

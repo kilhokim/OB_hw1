@@ -1,4 +1,5 @@
 function y = MEMORY_CONSTRUCTION(stature, num_trials, thresh)
+% Populate postures and register them in cells
 
 L = LINK(stature);  % Calculate lengths for each body link [L1, L2, L3, L4, L5, HeadNeck]
 

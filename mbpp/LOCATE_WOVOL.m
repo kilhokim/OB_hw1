@@ -1,5 +1,5 @@
 function y = LOCATE_WOVOL(L, P)
-%  This function is to place sensors to a posture P 
+%  Place sensors to a given posture P (without body volume)
 
 L1 = L(1);
 L2 = L(2);

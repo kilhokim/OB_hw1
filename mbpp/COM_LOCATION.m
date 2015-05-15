@@ -1,4 +1,5 @@
-function y = COM_LOCATION(L, P);
+function y = COM_LOCATION(L, P)
+% Calculate the coordinates of center of mass(COM)
 
 W = 1;
 

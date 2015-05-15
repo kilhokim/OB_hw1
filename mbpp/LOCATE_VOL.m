@@ -1,5 +1,5 @@
 function y = LOCATE_VOL(L, P, R)
-%  This function is to place sensors to a posture P 
+%  Place sensors to a given posture P (with body volume)
 
 r1 = R(1);
 r2 = R(2);

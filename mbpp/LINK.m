@@ -1,4 +1,5 @@
-function y = LINK(stature);
+function y = LINK(stature)
+% Calculate the length of body links
 
 L1 = 0.285*stature;
 L2 = (0.530-0.285)*stature;

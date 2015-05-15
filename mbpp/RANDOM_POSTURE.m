@@ -1,4 +1,5 @@
-function y = RANDOM_POSTURE();
+function y = RANDOM_POSTURE()
+% Generate a random posture p1, p2, p3, p4, p5
 
 % joint range of motion:
 % 0<p1<90

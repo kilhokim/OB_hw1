@@ -1,5 +1,5 @@
 function r = REBA( L, P, Y_tar, load_tar )
-% Calculate REBA score for the input posture
+% Calculate REBA score for given posture
 
     % Knee angle
     t2 = 180 - P(2);

@@ -1,9 +1,10 @@
 %% *************************************************************
 % Occupational Biomechanics
 % Homework #1
-% Industrial Engineering, Seoul National University
 %
 % author: Kilho Kim, Hakeun Jin
+% Information Management Lab
+% Industrial Engineering, Seoul National University
 % **************************************************************
 close all;
 clear all;
@@ -112,7 +113,7 @@ CPLOT(C,1);
 fill([X_tar X_tar+10 X_tar+10 X_tar X_tar], [Y_tar Y_tar Y_tar+10 Y_tar+10 Y_tar],'b');
 
 
-%% Draw all postures in the loaded cells
+%% Draw all postures from the loaded cells
 % NOTE: Change the value below to set the number of postures
 % To set # to the maximum, change the value to numP
 numPlot = numP;
@@ -134,7 +135,7 @@ for i=1:1:numPlot
 end;
 
 
-%% Draw possible postures only in the loaded cells
+%% Draw possible postures only from the loaded cells
 % Draw World
 figure(2);
 title('Recommended possible postures with the minimum REBA point');
