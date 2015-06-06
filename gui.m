@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 06-Jun-2015 17:02:50
+% Last Modified by GUIDE v2.5 06-Jun-2015 23:50:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -62,7 +62,11 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
                     
 % handles.hPlotAxes.Title.String = 'Total possible postures';
 title('Total possible postures');
-axis([-60 140 0 200]);           
+handles.min_x = -60;
+handles.max_x = 140;
+handles.min_y = 0;
+handles.max_y = 200;
+axis([handles.min_x, handles.max_x, handles.min_y, handles.max_y]);           
 %set(handles.world_axes, 'ButtonDownFcn', @AxesClickCallback);
 
 set(gca, 'Xtick', -60:10:140);
@@ -94,13 +98,48 @@ guidata(hObject, handles);
 % uiwait(handles.figure1);
 
 
-function AxesClickCallback ( objectHandle , eventData )
-axesHandle  = get(objectHandle,'Parent');
+function AxesClickCallback(objectHandle, eventData, handles, flag)
+axesHandle  = get(objectHandle, 'Parent');
 %coordinates = get(axesHandle,'CurrentPoint'); 
 %coordinates = coordinates(1,1:2);
-coordinates = ginput(1);
-message     = sprintf('x: %.1f , y: %.1f',coordinates (1) ,coordinates (2));
-helpdlg(message);
+if flag == 0
+    new_message = sprintf('%s\n%s', '장애물을 생성할 영역을 클릭하십시오.', ...
+                              '생성이 끝나면, 축 바깥쪽의 아무 곳이나 클릭하십시오.');
+else
+    new_message = sprintf('%s', '목표물을 생성할 영역을 클릭하십시오.');
+end
+set(handles.message_text, 'String', new_message);
+
+if flag == 0
+    handles.B = [];
+    %set(gcf, 'KeyPressFcn', @AxesKeyPressFcn)
+    i = 0;
+    while 1
+        i = i + 1;
+        coordinates = ginput(1);
+        if coordinates(1) < handles.min_x | coordinates(1) > handles.max_x | ...
+           coordinates(2) < handles.min_y | coordinates(2) > handles.max_y
+            break
+        end
+        %message = sprintf('i: %d, x: %.1f, y: %.1f', i, coordinates(1), coordinates(2));
+        %set(handles.message_text, 'String', message);
+        curr_x = floor(coordinates(1)/10)*10;
+        curr_y = floor(coordinates(2)/10)*10;
+        curr_w = 10;  curr_h = 10;
+        new_B = [curr_x, curr_y, curr_w, curr_h];
+        BPLOT(new_B, 1);
+        handles.B = [handles.B; new_B];
+    end
+else
+    coordinates = ginput(1);
+    curr_x = floor(coordinates(1)/10)*10;
+    curr_y = floor(coordinates(2)/10)*10;
+    curr_w = 10;  curr_h = 10;
+    new_T = [curr_x, curr_y, curr_w, curr_h];
+    TPLOT(new_T);
+    handles.T = new_T;
+end
+
 
 
 % --- Outputs from this function are returned to the command line.
@@ -120,7 +159,7 @@ function draw_obs_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-AxesClickCallback(hObject, eventdata)
+AxesClickCallback(hObject, eventdata, handles, 0)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -215,6 +254,7 @@ function draw_target_button_Callback(hObject, eventdata, handles)
 % hObject    handle to draw_target_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+AxesClickCallback(hObject, eventdata, handles, 1)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -236,4 +276,3 @@ function target_weight_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
