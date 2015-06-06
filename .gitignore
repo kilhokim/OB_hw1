@@ -16,6 +16,8 @@
 # Simulink Code Generation
 slprj/
 
+CELL/
+
 CELL_X*
 
 .DS_STORE
