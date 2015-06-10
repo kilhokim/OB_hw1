@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 10-Jun-2015 12:59:55
+% Last Modified by GUIDE v2.5 10-Jun-2015 14:09:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -74,10 +74,17 @@ set(gca, 'Ytick', 0:10:200);
 grid on;
 hold on;
 
-handles.stature = 170;
-handles.gender = 1;
-handles.age = 25;
-handles.load_tar = 5;
+% Single person's features
+handles.single_stature = 170;
+handles.single_gender = 1;  % male: 1, female: 2
+handles.single_age = 25;
+handles.single_target_weight = 5;
+% Multiple persons' features
+handles.multiple_population = 100;
+handles.multiple_gender = 1;  % male: 1, female: 2, all: 3
+handles.multiple_age_min = 25;
+handles.multiple_age_max = 50;
+handles.multiple_target_weight = 5;
 
 handles.Bplots = [];
 handles.B = [];
@@ -212,6 +219,7 @@ function single_stature_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
+handles.single_stature = str2double(get(handles.single_stature_edit, 'string'));
 
 
 % --- Executes during object creation, after setting all properties.
@@ -233,29 +241,7 @@ function single_age_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
-
-
-% --- Executes on button press in confirm_button.
-function confirm_button_Callback(hObject, eventdata, handles)
-% hObject    handle to confirm_button (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.stature = str2double(get(handles.single_stature_edit, 'string'));
-curr_gender = get(handles.single_gender_popupmenu, 'Value');
-if curr_gender == 2
-    handles.gender = 0;
-end
-
-handles.age = str2double(get(handles.single_age_edit, 'string'));
-handles.load_tar = str2double(get(handles.single_target_weight_edit, 'string'));
-% fprintf('handles.stature=%d', handles.stature);
-% fprintf('handles.gender=%d', handles.gender);
-% fprintf('handles.age=%d', handles.age);
-% fprintf('handles.load_tar=%d', handles.load_tar);
-message = sprintf('stature: %d , gender: %d, age: %d, load_tar: %d', ...
-        handles.stature, handles.gender, handles.age, handles.load_tar);
-helpdlg(message);
+handles.single_age = str2double(get(handles.single_age_edit, 'string'));
 
 
 % --- Executes during object creation, after setting all properties.
@@ -277,7 +263,7 @@ function single_gender_popupmenu_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
+handles.single_gender = get(handles.single_gender_popupmenu, 'Value');
 
 
 % --- Executes on button press in draw_target_button.
@@ -307,6 +293,7 @@ function single_target_weight_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
+handles.single_target_weight = str2double(get(handles.single_target_weight_edit, 'string'));
 
 
 % --- Executes when selected object is changed in uibuttongroup2.
@@ -326,18 +313,20 @@ end
 
 
 
-function edit9_Callback(hObject, eventdata, handles)
-% hObject    handle to edit9 (see GCBO)
+function multiple_population_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to multiple_population_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit9 as text
-%        str2double(get(hObject,'String')) returns contents of edit9 as a double
+% Hints: get(hObject,'String') returns contents of multiple_population_edit as text
+%        str2double(get(hObject,'String')) returns contents of multiple_population_edit as a double
+handles.multiple_population = str2double(get(handles.multiple_population_edit, 'string'));
+
 
 
 % --- Executes during object creation, after setting all properties.
-function edit9_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit9 (see GCBO)
+function multiple_population_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to multiple_population_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -349,18 +338,19 @@ end
 
 
 
-function edit10_Callback(hObject, eventdata, handles)
-% hObject    handle to edit10 (see GCBO)
+function multiple_age_min_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to multiple_age_min_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit10 as text
-%        str2double(get(hObject,'String')) returns contents of edit10 as a double
+% Hints: get(hObject,'String') returns contents of multiple_age_min_edit as text
+%        str2double(get(hObject,'String')) returns contents of multiple_age_min_edit as a double
+handles.multiple_age_min = str2double(get(handles.multiple_age_min_edit, 'string'));
 
 
 % --- Executes during object creation, after setting all properties.
-function edit10_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit10 (see GCBO)
+function multiple_age_min_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to multiple_age_min_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -371,19 +361,20 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on selection change in popupmenu3.
-function popupmenu3_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu3 (see GCBO)
+% --- Executes on selection change in multiple_gender_popupmenu.
+function multiple_gender_popupmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to multiple_gender_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu3 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu3
+% Hints: contents = cellstr(get(hObject,'String')) returns multiple_gender_popupmenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from multiple_gender_popupmenu
+handles.multiple_gender = str2double(get(handles.multiple_gender_popupmenu, 'string'));
 
 
 % --- Executes during object creation, after setting all properties.
-function popupmenu3_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu3 (see GCBO)
+function multiple_gender_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to multiple_gender_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -395,18 +386,20 @@ end
 
 
 
-function edit11_Callback(hObject, eventdata, handles)
-% hObject    handle to edit11 (see GCBO)
+function multiple_target_weight_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to multiple_target_weight_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit11 as text
-%        str2double(get(hObject,'String')) returns contents of edit11 as a double
+% Hints: get(hObject,'String') returns contents of multiple_target_weight_edit as text
+%        str2double(get(hObject,'String')) returns contents of multiple_target_weight_edit as a double
+handles.multiple_target_weight = str2double(get(handles.multiple_target_weight_edit, 'string'));
+
 
 
 % --- Executes during object creation, after setting all properties.
-function edit11_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit11 (see GCBO)
+function multiple_target_weight_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to multiple_target_weight_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -418,18 +411,19 @@ end
 
 
 
-function edit12_Callback(hObject, eventdata, handles)
-% hObject    handle to edit12 (see GCBO)
+function multiple_age_max_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to multiple_age_max_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit12 as text
-%        str2double(get(hObject,'String')) returns contents of edit12 as a double
+% Hints: get(hObject,'String') returns contents of multiple_age_max_edit as text
+%        str2double(get(hObject,'String')) returns contents of multiple_age_max_edit as a double
+handles.multiple_age_max = str2double(get(handles.multiple_age_max_edit, 'string'));
 
 
 % --- Executes during object creation, after setting all properties.
-function edit12_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit12 (see GCBO)
+function multiple_age_max_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to multiple_age_max_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
