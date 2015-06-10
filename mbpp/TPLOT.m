@@ -13,6 +13,4 @@ h = 10;
 
 xx = x;
 yy = y;
-fill([xx xx+w xx+w xx xx], [yy yy yy+h yy+h yy],'r');
-
-y = 1;
+y = fill([xx xx+w xx+w xx xx], [yy yy yy+h yy+h yy],'r');

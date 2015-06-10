@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 06-Jun-2015 23:50:24
+% Last Modified by GUIDE v2.5 10-Jun-2015 12:59:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,6 +79,11 @@ handles.gender = 1;
 handles.age = 25;
 handles.load_tar = 5;
 
+handles.Bplots = [];
+handles.B = [];
+handles.Tplots = [];
+handles.T = [];
+
 % handles.peaks = peaks(35);
 % handles.membrane = membrane;
 % [x, y] = meshgrid(-8:0.5:8);
@@ -87,6 +92,9 @@ handles.load_tar = 5;
 % handles.sinc = sinc;
 % handles.current_data = handles.peaks;
 % surf(handles.current_data);
+
+set(handles.multiple_panel, 'Visible', 'off');
+set(handles.single_panel, 'Visible', 'on');
 
 % Choose default command line output for gui
 handles.output = hObject;
@@ -103,15 +111,14 @@ axesHandle  = get(objectHandle, 'Parent');
 %coordinates = get(axesHandle,'CurrentPoint'); 
 %coordinates = coordinates(1,1:2);
 if flag == 0
-    new_message = sprintf('%s\n%s', 'Àå¾Ö¹°À» »ý¼ºÇÒ ¿µ¿ªÀ» Å¬¸¯ÇÏ½Ê½Ã¿À.', ...
-                              '»ý¼ºÀÌ ³¡³ª¸é, Ãà ¹Ù±ùÂÊÀÇ ¾Æ¹« °÷ÀÌ³ª Å¬¸¯ÇÏ½Ê½Ã¿À.');
+    new_message = sprintf('%s\n%s', 'ìž¥ì• ë¬¼ì„ ìƒì„±í•˜ê³  ì‹¶ì€ ì§€ì ì„ í´ë¦­í•˜ì‹­ì‹œì˜¤.',...
+                                     'í™”ë©´ ë°”ê¹¥ìª½ì„ í´ë¦­í•˜ë©´ ì¢…ë£Œë©ë‹ˆë‹¤.');
 else
-    new_message = sprintf('%s', '¸ñÇ¥¹°À» »ý¼ºÇÒ ¿µ¿ªÀ» Å¬¸¯ÇÏ½Ê½Ã¿À.');
+    new_message = sprintf('%s', 'ëª©í‘œë¬¼ì„ ìƒì„±í•˜ê³  ì‹¶ì€ ì§€ì ì„ í´ë¦­í•˜ì‹­ì‹œì˜¤.');
 end
 set(handles.message_text, 'String', new_message);
 
 if flag == 0
-    handles.B = [];
     %set(gcf, 'KeyPressFcn', @AxesKeyPressFcn)
     i = 0;
     while 1
@@ -127,8 +134,24 @@ if flag == 0
         curr_y = floor(coordinates(2)/10)*10;
         curr_w = 10;  curr_h = 10;
         new_B = [curr_x, curr_y, curr_w, curr_h];
-        BPLOT(new_B, 1);
-        handles.B = [handles.B; new_B];
+        if length(handles.B) == 0   % Empty handles.B in the beginning
+            p = BPLOT(new_B, 1);
+            handles.Bplots = [handles.Bplots; p];
+            handles.B = [handles.B; new_B];
+        else
+            [~, indices] = ismember(handles.B(:,1:2), new_B(1:2), 'rows');
+            is_duplicate = find(indices == 1);
+            if length(is_duplicate) > 0   % duplicate row found
+                p = handles.Bplots(is_duplicate);
+                delete(p);
+                handles.Bplots = removerows(handles.Bplots, 'ind', is_duplicate);
+                handles.B = removerows(handles.B, 'ind', is_duplicate);
+            else
+                p = BPLOT(new_B, 1);
+                handles.Bplots = [handles.Bplots; p];
+                handles.B = [handles.B; new_B];
+            end
+        end
     end
 else
     coordinates = ginput(1);
@@ -136,9 +159,17 @@ else
     curr_y = floor(coordinates(2)/10)*10;
     curr_w = 10;  curr_h = 10;
     new_T = [curr_x, curr_y, curr_w, curr_h];
-    TPLOT(new_T);
-    handles.T = new_T;
+    if length(handles.T) == 0   % Empty handles.T in the beginning
+        p = TPLOT(new_T);
+        handles.Tplot = p;
+        handles.T = new_T;
+    else
+        delete(handles.Tplot);
+        handles.Tplot = TPLOT(new_T);
+        handles.T = new_T;
+    end
 end
+guidata(objectHandle,handles);
 
 
 
@@ -163,8 +194,8 @@ AxesClickCallback(hObject, eventdata, handles, 0)
 
 
 % --- Executes during object creation, after setting all properties.
-function stature_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to stature_edit (see GCBO)
+function single_stature_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to single_stature_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -174,7 +205,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-function stature_edit_Callback(hObject, eventdata, handles)
+function single_stature_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to edit5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -184,8 +215,8 @@ function stature_edit_Callback(hObject, eventdata, handles)
 
 
 % --- Executes during object creation, after setting all properties.
-function age_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to age_edit (see GCBO)
+function single_age_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to single_age_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -195,7 +226,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-function age_edit_Callback(hObject, eventdata, handles)
+function single_age_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to edit5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -210,14 +241,14 @@ function confirm_button_Callback(hObject, eventdata, handles)
 % hObject    handle to confirm_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.stature = str2double(get(handles.stature_edit, 'string'));
-curr_gender = get(handles.gender_popupmenu, 'Value');
+handles.stature = str2double(get(handles.single_stature_edit, 'string'));
+curr_gender = get(handles.single_gender_popupmenu, 'Value');
 if curr_gender == 2
     handles.gender = 0;
 end
 
-handles.age = str2double(get(handles.age_edit, 'string'));
-handles.load_tar = str2double(get(handles.target_weight_edit, 'string'));
+handles.age = str2double(get(handles.single_age_edit, 'string'));
+handles.load_tar = str2double(get(handles.single_target_weight_edit, 'string'));
 % fprintf('handles.stature=%d', handles.stature);
 % fprintf('handles.gender=%d', handles.gender);
 % fprintf('handles.age=%d', handles.age);
@@ -228,8 +259,8 @@ helpdlg(message);
 
 
 % --- Executes during object creation, after setting all properties.
-function gender_popupmenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to gender_popupmenu (see GCBO)
+function single_gender_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to single_gender_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -239,7 +270,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-function gender_popupmenu_Callback(hObject, eventdata, handles)
+function single_gender_popupmenu_Callback(hObject, eventdata, handles)
 % hObject    handle to edit5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -258,8 +289,8 @@ AxesClickCallback(hObject, eventdata, handles, 1)
 
 
 % --- Executes during object creation, after setting all properties.
-function target_weight_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to target_weight_edit (see GCBO)
+function single_target_weight_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to single_target_weight_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -269,10 +300,141 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-function target_weight_edit_Callback(hObject, eventdata, handles)
+function single_target_weight_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to edit5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
+
+
+% --- Executes when selected object is changed in uibuttongroup2.
+function uibuttongroup2_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup2 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+switch hObject
+    case handles.single_radiobutton
+        set(handles.multiple_panel, 'Visible', 'off');
+        set(handles.single_panel, 'Visible', 'on');
+    case handles.multiple_radiobutton
+        set(handles.single_panel, 'Visible', 'off');
+        set(handles.multiple_panel, 'Visible', 'on');
+end
+
+
+
+function edit9_Callback(hObject, eventdata, handles)
+% hObject    handle to edit9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit9 as text
+%        str2double(get(hObject,'String')) returns contents of edit9 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit9_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit10_Callback(hObject, eventdata, handles)
+% hObject    handle to edit10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit10 as text
+%        str2double(get(hObject,'String')) returns contents of edit10 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit10_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in popupmenu3.
+function popupmenu3_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu3 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu3
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit11_Callback(hObject, eventdata, handles)
+% hObject    handle to edit11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit11 as text
+%        str2double(get(hObject,'String')) returns contents of edit11 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit11_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit12_Callback(hObject, eventdata, handles)
+% hObject    handle to edit12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit12 as text
+%        str2double(get(hObject,'String')) returns contents of edit12 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit12_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
