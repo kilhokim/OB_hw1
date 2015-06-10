@@ -9,7 +9,7 @@ for i=-60:10:150
       
       cell_name = ['CELL_X' num2str(i) 'Y' num2str(j)];
       cell_name = strrep(cell_name, '-', 'N');      
-      haha = importdata(cell_name);
+      haha = importdata(fullfile('CELL', cell_name));
       temp_size = size(haha);
       temp_length = temp_size(1);
       

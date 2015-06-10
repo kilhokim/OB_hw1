@@ -1,5 +1,6 @@
 function y = MEMORY_CONSTRUCTION()
-tic
+%tic
+h = waitbar(0, 'Constructing memory. Please wait...');
 num_iteration = 100000; % 10만개
 links = xlsread('link.xlsx');
 links_length = length(links);
@@ -13,7 +14,7 @@ for i=-60:10:150
     for j=0:10:230
         cell_name = ['CELL_X' num2str(i) 'Y' num2str(j)];
         cell_name = strrep(cell_name, '-', 'N');
-        eval([cell_name ' = load(' ''''  cell_name  '''' ');']);
+        eval([cell_name ' = load(' ''''  fullfile('CELL', cell_name)  '''' ');']);
     end;
 end;
 
@@ -67,8 +68,8 @@ while num_registered_posture <= num_iteration
     eval([cell_name ' = [' cell_name ' ; ' num2str(P) ' ' num2str(HAND_LOC) ' ' num2str(L) ' ' num2str(W) ' ' num2str(user_id) ' ' num2str(sum(abs(JOINT_TORQUE(L,P)))) ' ];']);
     num_registered_posture = num_registered_posture + 1;
     
-    if mod(num_registered_posture, 10000)==0;
-        num_registered_posture/10000
+    if mod(num_registered_posture, 100)==0;
+        waitbar(num_registered_posture/num_iteration)
     end
     
     XX2 = floor(HAND_LOC(1)/10)+7;
@@ -82,7 +83,8 @@ for i=-60:10:150
         
         cell_name = ['CELL_X' num2str(i) 'Y' num2str(j)];
         cell_name = strrep(cell_name, '-', 'N');
-        haha = fopen(cell_name,'w');
+        cell_path = fullfile('CELL', cell_name);
+        haha = fopen(cell_path,'w');
         eval(['a = ' cell_name ';']);
         temp_length = size(a);
         
@@ -95,12 +97,14 @@ for i=-60:10:150
     end;
 end;
 
-toc
+%toc
 % cell당 등록된 posture 갯수를 담은 matrix를 엑셀로 저장
 xlswrite('cell_posture.xlsx', num_posture_maxtrix);
 
 % % cell당 등록된 posture간의 거리 평균 및 표준편차 matrix를 엑셀에 저장
 CELL_POSTURE_ANALYSIS();
+
+close(h);
 
 
 
