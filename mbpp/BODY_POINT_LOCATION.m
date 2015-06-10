@@ -1,5 +1,4 @@
-function y = HAND_LOCATION(L, P);
-
+function y = BODY_POINT_LOCATION(L, P)
 
 L1 = L(1);
 L2 = L(2);
@@ -32,4 +31,6 @@ HandX = ElboX + L5*cos(t1+t2+t3+t4+t5);
 HandY = ElboY + L5*sin(t1+t2+t3+t4+t5);
 
 
-y = [HandX HandY];
+y = [KneeX KneeY HipX HipY ShoulX ShoulY ElboX ElboY HandX HandY];
+end
+

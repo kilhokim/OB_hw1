@@ -1,5 +1,4 @@
-function y = COM_LOCATION(L, P)
-% Calculate the coordinates of center of mass(COM)
+function y = COM_LOCATION(L, P); % L:link, P:posture
 
 W = 1;
 
@@ -27,6 +26,8 @@ t2 = P(2)*pi/180;
 t3 = P(3)*pi/180;
 t4 = P(4)*pi/180;
 t5 = P(5)*pi/180;
+t6 = P(6)*pi/180;
+t7 = P(7)*pi/180;
 
 AnkleX = 0;
 AnkleY = 0;
@@ -46,11 +47,23 @@ ElboY = ShoulY + L4*sin(t1+t2+t3+t4);
 HandX = ElboX + L5*cos(t1+t2+t3+t4+t5);
 HandY = ElboY + L5*sin(t1+t2+t3+t4+t5);
 
+KneeX_new = HipX + L2*cos(t6);
+KneeY_new = HipY + L2*sin(t6);
+
+AnkleX_new = KneeX_new - L1*cos(t7);
+AnkleY_new = 0;
+
 CM1X = AnkleX + (KneeX-AnkleX)*0.5253;
 CM1Y = AnkleY + (KneeY-AnkleY)*0.5253;
 
 CM2X = KneeX + (HipX-KneeX)*0.6281;
 CM2Y = KneeY + (HipY-KneeY)*0.6281;
+
+CM1X_new = AnkleX_new + (KneeX_new-AnkleX_new)*0.5253;
+CM1Y_new = AnkleY_new + (KneeY_new-AnkleY_new)*0.5253;
+
+CM2X_new = KneeX_new + (HipX-KneeX_new)*0.6281;
+CM2Y_new = KneeY_new + (HipY-KneeY_new)*0.6281;
 
 CM3X = HipX + (ShoulX-HipX)*0.6197;
 CM3Y = HipY + (ShoulY-HipY)*0.6197;
@@ -61,7 +74,7 @@ CM4Y = ShoulY + (ElboY-ShoulY)*0.5130;
 CM5X = ElboX + (HandX-ElboX)*0.6258;
 CM5Y = ElboY + (HandY-ElboY)*0.6258;
 
-COMX = (W1*CM1X + W2*CM2X + W3*CM3X + W4*CM4X + W5*CM5X)/(W1+W2+W3+W4+W5);
-COMY = (W1*CM1Y + W2*CM2Y + W3*CM3Y + W4*CM4Y + W5*CM5Y)/(W1+W2+W3+W4+W5);
+COMX = (W1*CM1X/2 + W2*CM2X/2 + (W1*CM1X_new/2 + W2*CM2X_new/2) + W3*CM3X + W4*CM4X + W5*CM5X)/(W1+W2+W3+W4+W5);
+COMY = (W1*CM1Y/2 + W2*CM2Y/2 + (W1*CM1Y_new/2 + W2*CM2Y_new/2) + W3*CM3Y + W4*CM4Y + W5*CM5Y)/(W1+W2+W3+W4+W5);
 
-y = [COMX COMY];
+y = [COMX COMY AnkleX_new];

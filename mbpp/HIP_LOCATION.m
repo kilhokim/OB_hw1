@@ -1,6 +1,4 @@
-function y = SHOULDER_LOCATION(L, P);
-
-
+function y = HIP_LOCATION(L, P)
 L1 = L(1);
 L2 = L(2);
 L3 = L(3);
@@ -22,7 +20,4 @@ KneeY = L1*sin(t1);
 HipX = KneeX + L2*cos(t1+t2);
 HipY = KneeY + L2*sin(t1+t2);
 
-ShoulX = HipX + L3*cos(t1+t2+t3);
-ShoulY = HipY  + L3*sin(t1+t2+t3);
-
-y = [ShoulX ShoulY];
+y = [HipX HipY];

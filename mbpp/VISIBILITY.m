@@ -1,9 +1,17 @@
-function y = POTENTIAL2(L, P, B, C, R)
+function totalpt = VISIBILITY(L, P, R, B, T, C)
+
+temp_locate = LOCATE_VOL(L, P, R);
+eye_location = temp_locate(48, :);
+
 
 % Evaluate the potential function for a given posture
 
 % Sensor coordinates to the body posture
-s = LOCATE_VOL(L, P, R);
+
+s = [];
+for i=0:20
+    s = [s; i*(eye_location(1)-T(1))/20 + T(1), i*(eye_location(2)-T(2))/20+T(2)];
+end
 
 temp = size(s);
 % Calculate the number of sensors' coordinates
@@ -49,7 +57,8 @@ for i=1:numS,
          
       end;
       
-   end;  
+   end;
+   
    
    for j=1:numC
        Cx = C(j,1);
@@ -70,7 +79,9 @@ for i=1:numS,
        end
        
        
-   end
-end;
+   end  
+   
+end
 
-y = totalpt;
+end
+

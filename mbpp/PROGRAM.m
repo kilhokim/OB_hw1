@@ -1,166 +1,267 @@
-%% *************************************************************
-% Occupational Biomechanics
-% Homework #1
-%
-% author: Kilho Kim, Hakeun Jin
-% Information Management Lab
-% Industrial Engineering, Seoul National University
-% **************************************************************
-close all;
+%close all;
 clear all;
 
+num_of_target_touch = 0;
+% ��ü ���� ��������
+p1_L = 45; p1_U = 90; p2_L = 0; p2_U = 160; p3_L = -160; p3_U = 0; p4_L = -180; p4_U = -20; p5_L = 30; p5_U = 180; 
 
-%% Human Linkage
-% IMPORTANT: This must be predefined 
-% before generating postures of the fixed stature
-stature = input('Stature(cm) = ');
-if (exist('CELL', 'dir') == 0)
-    mkdir('CELL');
+%% ��� ����
+% ��� 1 ->
+% input = ���� ���� id, output = torque�� ���� ���� �ڼ�
+% ��� 2 ->
+% input = �ټ��� ���� id, output = ����� torque�� ���� �ڼ�
+mode = input('mode(1(single), 2(multiple) = ');
+
+user_id = [];
+if mode == 1
+    temp_id = input('one user_id(1~5195) = ');
+    user_id = [user_id; temp_id];    
+elseif mode == 2
+    while 1
+        temp_id = input('one user_id(1~5195), �׸��Է��Ͻ÷��� -1 �Է� = ');
+        if temp_id == -1
+           break; 
+        end
+        user_id = [user_id; temp_id];    
+    end
 end
 
-cname = ['CELL_S' num2str(stature) '_X' num2str(0) 'Y' num2str(0)];
-if (exist(fullfile('CELL', cname), 'file') == 0 || ...
-    str2num(cname(7:9)) ~= stature)
-    CELL_CONSTRUCTION(stature);
-    fprintf('Generating new memory cells... (this might take a while)\n');
-    num_trials = input('Number of trials for posture generation(default=10000) = ');
-    thresh = input('Threshold for posture generation(default=20) = ');
-    MEMORY_CONSTRUCTION(stature, num_trials, thresh);    
+
+%% ��ֹ� ����    >>>>> Ŭ���� ���� �ٲ����
+boundary = input('boundary [1 : 6] = ');
+switch boundary
+    case 1 %'a'
+        B = [];
+    case 2 %'b'
+        B = [20 0 70 90];
+    case 3 %'c'
+        B = [20 0 20 100; 20 140 20 50];
+    case 4 %'d'
+        B = [20 0 70 90; 20 100 70 90];
+    case 5 %'e'
+        B = [0 90 30 10; 40 0 30 80; 40 110 30 80];
+    case 6 %'f'
+        B = [-60 100 160 90; 50 0 50 70];
+    case 7 %'f'
+        B = [40 110 10 10];
 end
-L = LINK(stature);
+
+C = [];
 
 
-%% Input variables
-case_no = input('Case number(Semiconductor factory=1, Stairs=2, Automobile=3) = ');
-gender = input('Gender(Man=1,WOMAN=0) = ');
-age = input('Age = ');
-X_tar = input('X_tar = ');
-Y_tar = input('Y_tar = ');
-load_tar = input('Load mass = ');
-flag_volume = input('Add volume to the body(TRUE=1, FALSE=0) = ');
-
-% R contains the thickness info of 5 body parts
-R = THICKNESS(gender, age);
-
-% The coordinates of the target (width=10, height=10)
+%% Target ���� >> Ŭ���� ���� �ٲ����
+X_tar = 50;
+Y_tar = 90;
 T = [X_tar Y_tar];
+T_center = [X_tar+5 Y_tar+5];
+
+%% Target Load ����  >> ���� �ʿ�
+load_tar = 0;
 
 
-%% Obstacles Configuration
-% NOTE: This should be predefined before running
-
-% Obstacle Configuration: Box
-% B = [x y w h; x y w h; ...]
-% Obstacle Configuration: Sphere
-% C = [x y r; x y r; ...]
-
-% Posture #1(Semiconductor factory)
-% The number of possible postures decreases
-% due to the volume of the knee part if x=40, y=80
-if (case_no == 1)
-    B = [X_tar-10 0 30 Y_tar; X_tar-10 Y_tar+20 30 50; X_tar+20 0 10 150]; % [X, Y, width, height]    
-    C = [];
-% Posture #2(Stairs)
-% Knee part hits the obstacle if x=50, y=50
-elseif (case_no == 2)
-    B = [X_tar-20 0 20 Y_tar-10;
-         X_tar 0 20 Y_tar; X_tar+20 0 20 Y_tar+20]; % [X, Y, width, height]
-    C = [];
-% posture #3(automobile)
-% x=30, y= 160, 170, 180
-else
-    height = Y_tar+10;
-    B = [-30 height 150 20;]; % [X, Y, width, height]
-    C = [-30+30 height-10 10; -30+150-30 height-10 10];
-end
-
-
-%% Load postures data from outer CELLs
-% Loading the relevant cell
+%% Loading the relevant cell
 XX = num2str(floor(X_tar/10)*10);
 YY = num2str(floor(Y_tar/10)*10);
 
-cell_name = ['CELL_S' num2str(stature) '_X' XX 'Y' YY];
+cell_name = ['CELL_X' XX 'Y' YY];
 cell_name = strrep(cell_name, '-', 'N');
 
-% Load postures data from CELL_S###X##Y##
-postures = load(fullfile('CELL', cell_name));
-
+postures = load(cell_name);
 temp = size(postures);
 numP = temp(1);
 
+% postures�� torque ������������ ����
+[A_sorted sorted_index] = sort(postures, 1);
+for i=1:21
+    A_sorted(:,i) = postures(sorted_index(:,22), i);
+end
+postures = A_sorted;
 
-%% Draw world, target and obstacles
+
 % Draw World
-figure (1);
-title('Total possible postures');
-axis([-60 140 0 200]);
+figure (boundary);
 
-set(gca, 'Xtick', -60:10:140);
-set(gca, 'Ytick', 0:10:200);
+% Draw obstacle and target
+axis([-60 140 0 190]);
+
+set(gca, 'Xtick', -60:10:160);
+set(gca, 'Ytick', 0:10:190);
 
 grid on;
 hold on;
+axis square;
 
 % Draw Target
 TPLOT(T);
 
-% Draw Obstacle Configuration 
+% Draw Obstacle Configuration
 BPLOT(B,1);
-CPLOT(C,1);
 
-% Fill the target with blue
-fill([X_tar X_tar+10 X_tar+10 X_tar X_tar], [Y_tar Y_tar Y_tar+10 Y_tar+10 Y_tar],'b');
+% ���� ��� ����
+adjustment_methods = [2 3 4 5];
 
-
-%% Draw all postures from the loaded cells
-% NOTE: Change the value below to set the number of postures
-% To set # to the maximum, change the value to numP
-numPlot = numP;
-REBAs = [];
-possible_postures = [];
-
-% Plot for every posture in postures array
-for i=1:1:numPlot
-   posture = postures(i,:);
-   % Checking collision: if there's collision, potential > 0
-   potential = POTENTIAL2(L, posture, B, C, flag_volume, R);
-   
-   % Visualize plot only if there is no collision
-   if (potential == 0)
-      VISUALIZE(1, L, posture, flag_volume, R);
-      REBAs = [REBAs; REBA(L, posture, Y_tar, load_tar)];
-      possible_postures = [possible_postures; posture];
-   end;
-end;
+% �޸� ������ ��
+links = xlsread('link.xlsx');
+links_length = length(links);
 
 
-%% Draw possible postures only from the loaded cells
-% Draw World
-figure(2);
-title('Recommended possible postures with the minimum REBA point');
-axis([-60 140 0 200]);
+%% ���౸��
+for user=user_id
+    test_data = links(user_id, :);
+    test_L = test_data(1:6)/10;
+    test_R = test_data(8:12)/20;       
+    
+    result_postures = [];
+    
+    num_of_target_touch = 0;
+    start_time = clock;
+    
+    is_over = -1;
+    for i=1:numP
+        if is_over == 0
+            break;
+        end
+        
+        %% �˻� �ܰ�
+        training_posture = postures(i,1:7); % theta 6,7 �߰�
+        training_w = postures(i, 16:20);
+        training_length = postures(i, 10:15);
+        
+        % potential ����(�˻� �� ��Ź��� ������ �������� ����)
+        potential = POTENTIAL2(training_length, training_posture, B, C, training_w);
+        if potential ~= 0
+            continue;
+        end
+        
+        %% ���� �ܰ�(����)
+        for adjustment_method = adjustment_methods
+            result_posture = [postures(i, :) test_L zeros(1,13)];
+            result_posture(29) = adjustment_method;
+            
+            switch adjustment_method
+                case 2
+                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 2);
+                    if posture ==1
+                        result_posture(30) = 0;
+                        result_postures = [result_postures; result_posture];
+                        continue;
+                    end
+                case 3
+                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 3);
+                    if posture ==1
+                        result_posture(30) = 0;
+                        result_postures = [result_postures; result_posture];
+                        continue;
+                    end
+                case 4
+                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 4);
+                    if posture ==1
+                        result_posture(30) = 0;
+                        result_postures = [result_postures; result_posture];
+                        continue;
+                    end
+                case 5
+                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 5);
+                    if posture ==1
+                        result_posture(30) = 0;
+                        result_postures = [result_postures; result_posture];
+                        continue;
+                    end
+            end
+            %% ���� �ܰ�(���� ���� �ľ�; ��ֹ� ����, BOS ����, ���� ����)
+            
+            % �� ���� ����
+            neck = NECK(test_L, posture, T_center);
+            if neck == -1000
+                result_posture(30) = 0;
+                result_postures = [result_postures; result_posture];
+                continue
+            else
+                posture(8) = neck;
+            end
+            
+            % ��ֹ��� ����� �ľ�
+            potential = POTENTIAL2(test_L, posture, B, C, test_R);
+            if (potential == 0)
+                result_posture(30) = 1;
+            else
+                result_posture(30) = 0;
+                result_postures = [result_postures; result_posture];
+                continue
+            end
+            
+            % BOS ����
+            COM_LOC = COM_LOCATION(test_L,posture);
+            HAND_LOC = HAND_LOCATION(test_L,posture);
+            SHOULDER_LOC = SHOULDER_LOCATION(test_L,posture);
+            H_S_DIST = norm(HAND_LOC - SHOULDER_LOC);
+            
+            
+            % �ٸ� �߰��Ǿ��� �� BOS��� �߰�
+            if posture(6) ~=0 && posture(7) ~=0
+                if COM_LOC(3) == 0 || (COM_LOC(1) > COM_LOC(3)+15) || (COM_LOC(1) < -5) || (H_S_DIST < 20) || (HAND_LOC(2)<=0)
+                    result_posture(30) = 0;
+                    result_postures = [result_postures; result_posture];
+                else
+                    result_posture(30) = 1;
+                end
+                
+            else
+                if ((COM_LOC(1)>15) || (COM_LOC(1)<-5) || (HAND_LOC(1)<5) || (H_S_DIST < 20) || (HAND_LOC(2)<=0))
+                    result_posture(30) = 0;
+                    result_postures = [result_postures; result_posture];
+                    continue
+                else
+                    result_posture(30) = 1;
+                end
+            end
+            
+            % ���� ����
+            if (posture(1)>p1_L && posture(1)<p1_U && posture(2)>p2_L && posture(2)<p2_U && posture(3)>p3_L && posture(3)<p3_U && posture(4)>p4_L && posture(4)<p4_U && posture(5)>p5_L && posture(5)<p5_U)
+                result_posture(30) = 1;
+            else
+                result_posture(30) = 0;
+                result_postures = [result_postures; result_posture];
+                continue
+            end
+            result_posture(31:38) = posture;
+            
+            
+            %% ���� ���� �߰� (39)
+            reba_score = REBA(test_L, posture, Y_tar, load_tar);
+            result_posture(39) = reba_score;
+            
+            %% ��ũ ���� (40)
+            torq = sum(abs(JOINT_TORQUE(test_L,posture)));
+            result_posture(40) = torq;
+            
+            %% visibility �߰� (41)
+            vs_pt = VISIBILITY(test_L, posture, test_R, B, T_center, C);
+            if vs_pt > 0
+                visibility = 0
+            elseif vs_pt == 0
+                visibility = 1
+            end
+            result_posture(41) = visibility;
+                        
+            result_postures = [result_postures; result_posture]; 
+            
+            VISUALIZE(1, test_L, posture, test_R);
 
-set(gca, 'Xtick', -60:10:140);
-set(gca, 'Ytick', 0:10:200);
-
-grid on;
-hold on;
-
-% Draw Target
-TPLOT(T);
-
-% Draw Obstacle Configuration 
-BPLOT(B,1);
-CPLOT(C,1);
-
-% Fill the target with blue
-fill([X_tar X_tar+10 X_tar+10 X_tar X_tar], [Y_tar Y_tar Y_tar+10 Y_tar+10 Y_tar],'b');
-min_REBA = min(REBAs);
-min_postures = possible_postures(REBAs == min_REBA, :);
-temp = size(min_postures);
-for i=1:1:temp(1)
-    posture = min_postures(i,:);
-    VISUALIZE(1, L, posture, flag_volume, R);
-    text(-55,10, sprintf('REBA = %1d', min_REBA));
+            num_of_target_touch = num_of_target_touch+1;
+            
+            is_over = 0;
+            break;
+            
+        end
+        
+    end
+    
+    execution_time = etime(clock, start_time);
+    title_str=[num2str(num_of_target_touch), ' postures, ', num2str(execution_time), ' s'];
+    title(title_str);
+    
+    % exel�� ����
+    %     filename = ['result_stature_', num2str(user_id), '_boundary_', num2str(boundary)];
+    %     xlswrite(filename, result_postures);
 end

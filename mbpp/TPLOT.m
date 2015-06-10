@@ -1,5 +1,4 @@
-function y = TPLOT(T)
-% Plot rectangular target object
+function y = TPLOT(T);
 
 hold on;
 
@@ -13,4 +12,6 @@ h = 10;
 
 xx = x;
 yy = y;
-y = fill([xx xx+w xx+w xx xx], [yy yy yy+h yy+h yy],'r');
+fill([xx xx+w xx+w xx xx], [yy yy yy+h yy+h yy],'r');
+
+y = 1;

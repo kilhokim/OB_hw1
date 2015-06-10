@@ -22,6 +22,25 @@ t3 = P(3)*pi/180;
 t4 = P(4)*pi/180;
 t5 = P(5)*pi/180;
 
+temp6 = P(6)*pi/180;
+temp7 = P(7)*pi/180;
+t6 = temp7;
+t7 = pi-(temp7-temp6);
+% 
+% temp = [temp6 temp7]
+% temp2 = [t6 t7]
+% 
+%     t6_kil = pi-acosd(temp6);
+%     t6 = pi-(t7-t6_kil);
+
+% neck angle
+p_size = size(P);
+if p_size(2) ~=8
+    t8 = 0;
+else
+    t8 = P(8)*pi/180;
+end
+
 s1x = 0;
 s1y = 0;
 b1x = s1x;
@@ -215,23 +234,24 @@ f24x = s24x + r3*cos(t1+t2+t3 - pi/2);
 f24y = s24y + r3*sin(t1+t2+t3 - pi/2);
 
 
-h5x = s25x + HeadNeck*(s25x - s17x)/sqrt((s25x-s17x)^2+(s25y-s17y)^2);
-h5y = s25y + HeadNeck*(s25y - s17y)/sqrt((s25x-s17x)^2+(s25y-s17y)^2);
+h5x = s25x + (HeadNeck*(s25x - s17x)/sqrt((s25x-s17x)^2+(s25y-s17y)^2))*(cos(t1+t2+t3+t8)/cos(t1+t2+t3));
+h5y = s25y + (HeadNeck*(s25y - s17y)/sqrt((s25x-s17x)^2+(s25y-s17y)^2))*(sin(t1+t2+t3+t8)/sin(t1+t2+t3));
 
-h1x = s25x + 2/5*HeadNeck*(s25x - s17x)/sqrt((s25x-s17x)^2+(s25y-s17y)^2);
-h1y = s25y + 2/5*HeadNeck*(s25y - s17y)/sqrt((s25x-s17x)^2+(s25y-s17y)^2);
+h1x = s25x + (2/5*HeadNeck*(s25x - s17x)/sqrt((s25x-s17x)^2+(s25y-s17y)^2))*(cos(t1+t2+t3+t8)/cos(t1+t2+t3));
+h1y = s25y + (2/5*HeadNeck*(s25y - s17y)/sqrt((s25x-s17x)^2+(s25y-s17y)^2))*(sin(t1+t2+t3+t8)/sin(t1+t2+t3));
 
-h4x = h1x + cos(t1+t2+t3)*3/5*HeadNeck - sin(t1+t2+t3)*(HeadDepth/2);
-h4y = h1y + sin(t1+t2+t3)*3/5*HeadNeck + cos(t1+t2+t3)*(HeadDepth/2);
 
-h6x = h1x + cos(t1+t2+t3)*3/5*HeadNeck - sin(t1+t2+t3)*(-HeadDepth/2);
-h6y = h1y + sin(t1+t2+t3)*3/5*HeadNeck + cos(t1+t2+t3)*(-HeadDepth/2);
+h4x = h1x + cos(t1+t2+t3+t8)*3/5*HeadNeck - sin(t1+t2+t3+t8)*(HeadDepth/2);
+h4y = h1y + sin(t1+t2+t3+t8)*3/5*HeadNeck + cos(t1+t2+t3+t8)*(HeadDepth/2);
 
-h8x = h1x + cos(t1+t2+t3)*0 - sin(t1+t2+t3)*(-HeadDepth/2);
-h8y = h1y + sin(t1+t2+t3)*0 + cos(t1+t2+t3)*(-HeadDepth/2);
+h6x = h1x + cos(t1+t2+t3+t8)*3/5*HeadNeck - sin(t1+t2+t3+t8)*(-HeadDepth/2);
+h6y = h1y + sin(t1+t2+t3+t8)*3/5*HeadNeck + cos(t1+t2+t3+t8)*(-HeadDepth/2);
 
-h2x = h1x + cos(t1+t2+t3)*0 - sin(t1+t2+t3)*(HeadDepth/2);
-h2y = h1y + sin(t1+t2+t3)*0 + cos(t1+t2+t3)*(HeadDepth/2);
+h8x = h1x + cos(t1+t2+t3+t8)*0 - sin(t1+t2+t3+t8)*(-HeadDepth/2);
+h8y = h1y + sin(t1+t2+t3+t8)*0 + cos(t1+t2+t3+t8)*(-HeadDepth/2);
+
+h2x = h1x + cos(t1+t2+t3+t8)*0 - sin(t1+t2+t3+t8)*(HeadDepth/2);
+h2y = h1y + sin(t1+t2+t3+t8)*0 + cos(t1+t2+t3+t8)*(HeadDepth/2);
 
 h3x = (h2x + h4x)/2;
 h3y = (h2y + h4y)/2;
@@ -340,6 +360,248 @@ b40y = s40y + r5*sin(t1+t2+t3+t4+t5 + pi/2);
 f40x = s40x + r5*cos(t1+t2+t3+t4+t5 - pi/2);
 f40y = s40y + r5*sin(t1+t2+t3+t4+t5 - pi/2);
 
+% new 다리 센서
+if P(6)~=0 & P(7)~=0, 
+    COM = COM_LOCATION(L,P);
+    
+%     s1x = 0;
+% s1y = 0;
+% b1x = s1x;
+% b1y = s1y;
+% f1x = s1x;
+% f1y = s1y;
+% 
+% s9x = L1*cos(t1);
+% s9y = L1*sin(t1);
+% b9x = s9x + r2*cos(t1+t2+(pi-t2)/2);
+% b9y = s9y + r2*sin(t1+t2+(pi-t2)/2);
+% f9x = s9x + r2*cos(t1+t2+(pi-t2)/2 - pi);
+% f9y = s9y + r2*sin(t1+t2+(pi-t2)/2 - pi);
+% 
+% s17x = s9x + L2*cos(t1+t2);
+% s17y = s9y + L2*sin(t1+t2);
+%     
+    
+    
+    ls1x = COM(3);
+    ls1y = 0;
+    lb1x = ls1x;
+    lb1y = ls1y;
+    lf1x = ls1x;
+    lf1y = ls1y;
+
+    ls9x = ls1x + L1*cos(t6);
+    ls9y = ls1y + L1*sin(t6);
+    lb9x = ls9x + r2*cos(t6+t7+(pi-t7)/2);
+    lb9y = ls9y + r2*sin(t6+t7+(pi-t7)/2);
+    lf9x = ls9x + r2*cos(t6+t7+(pi-t7)/2 - pi);
+    lf9y = ls9y + r2*sin(t6+t7+(pi-t7)/2 - pi);
+
+    ls17x = ls9x + L2*cos(t6+t7);
+    ls17y = ls9y + L2*sin(t6+t7);
+
+    lb17x = ls17x + r3*cos(t6+t7+t3-(pi-t7)/2+pi);
+    lb17y = ls17y + r3*sin(t6+t7+t3-(pi-t7)/2+pi);
+    lf17x = ls17x + r3*cos(t6+t7+t3-(pi-t7)/2);
+    lf17y = ls17y + r3*sin(t6+t7+t3-(pi-t7)/2);
+    
+    ls2x = ls1x + 1/8*(ls9x - ls1x);
+    ls2y = ls1y + 1/8*(ls9y - ls1y);
+    lb2x = ls2x + r1*cos(t6 + pi/2);
+    lb2y = ls2y + r1*sin(t6 + pi/2);
+    lf2x = ls2x + r1*cos(t6 - pi/2);
+    lf2y = ls2y + r1*sin(t6 - pi/2);
+    ls3x = ls1x + 2/8*(ls9x - ls1x);
+    ls3y = ls1y + 2/8*(ls9y - ls1y);
+    lb3x = ls3x + r1*cos(t6 + pi/2);
+    lb3y = ls3y + r1*sin(t6 + pi/2);
+    lf3x = ls3x + r1*cos(t6 - pi/2);
+    lf3y = ls3y + r1*sin(t6 - pi/2);
+    ls4x = ls1x + 3/8*(ls9x - ls1x);
+    ls4y = ls1y + 3/8*(ls9y - ls1y);
+    lb4x = ls4x + r1*cos(t6 + pi/2);
+    lb4y = ls4y + r1*sin(t6 + pi/2);
+    lf4x = ls4x + r1*cos(t6 - pi/2);
+    lf4y = ls4y + r1*sin(t6 - pi/2);
+    ls5x = ls1x + 4/8*(ls9x - ls1x);
+    ls5y = ls1y + 4/8*(ls9y - ls1y);
+    lb5x = ls5x + r1*cos(t6 + pi/2);
+    lb5y = ls5y + r1*sin(t6 + pi/2);
+    lf5x = ls5x + r1*cos(t6 - pi/2);
+    lf5y = ls5y + r1*sin(t6 - pi/2);
+    ls6x = ls1x + 5/8*(ls9x - ls1x);
+    ls6y = ls1y + 5/8*(ls9y - ls1y);
+    lb6x = ls6x + r1*cos(t6 + pi/2);
+    lb6y = ls6y + r1*sin(t6 + pi/2);
+    lf6x = ls6x + r1*cos(t6 - pi/2);
+    lf6y = ls6y + r1*sin(t6 - pi/2);
+    ls7x = ls1x + 6/8*(ls9x - ls1x);
+    ls7y = ls1y + 6/8*(ls9y - ls1y);
+    lb7x = ls7x + r1*cos(t6 + pi/2);
+    lb7y = ls7y + r1*sin(t6 + pi/2);
+    lf7x = ls7x + r1*cos(t6 - pi/2);
+    lf7y = ls7y + r1*sin(t6 - pi/2);
+    ls8x = ls1x + 7/8*(ls9x - ls1x);
+    ls8y = ls1y + 7/8*(ls9y - ls1y);
+    lb8x = ls8x + r1*cos(t6 + pi/2);
+    lb8y = ls8y + r1*sin(t6 + pi/2);
+    lf8x = ls8x + r1*cos(t6 - pi/2);
+    lf8y = ls8y + r1*sin(t6 - pi/2);
+    ls10x = ls9x + 1/8*(ls17x - ls9x);
+    ls10y = ls9y + 1/8*(ls17y - ls9y);
+    lb10x = ls10x + r2*cos(t6+t7 + pi/2);
+    lb10y = ls10y + r2*sin(t6+t7 + pi/2);
+    lf10x = ls10x + r2*cos(t6+t7 - pi/2);
+    lf10y = ls10y + r2*sin(t6+t7 - pi/2);
+    ls11x = ls9x + 2/8*(ls17x - ls9x);
+    ls11y = ls9y + 2/8*(ls17y - ls9y);
+    lb11x = ls11x + r2*cos(t6+t7 + pi/2);
+    lb11y = ls11y + r2*sin(t6+t7 + pi/2);
+    lf11x = ls11x + r2*cos(t6+t7 - pi/2);
+    lf11y = ls11y + r2*sin(t6+t7 - pi/2);
+    ls12x = ls9x + 3/8*(ls17x - ls9x);
+    ls12y = ls9y + 3/8*(ls17y - ls9y);
+    lb12x = ls12x + r2*cos(t6+t7 + pi/2);
+    lb12y = ls12y + r2*sin(t6+t7 + pi/2);
+    lf12x = ls12x + r2*cos(t6+t7 - pi/2);
+    lf12y = ls12y + r2*sin(t6+t7 - pi/2);
+    ls13x = ls9x + 4/8*(ls17x - ls9x);
+    ls13y = ls9y + 4/8*(ls17y - ls9y);
+    lb13x = ls13x + r2*cos(t6+t7 + pi/2);
+    lb13y = ls13y + r2*sin(t6+t7 + pi/2);
+    lf13x = ls13x + r2*cos(t6+t7 - pi/2);
+    lf13y = ls13y + r2*sin(t6+t7 - pi/2);
+    ls14x = ls9x + 5/8*(ls17x - ls9x);
+    ls14y = ls9y + 5/8*(ls17y - ls9y);
+    lb14x = ls14x + r2*cos(t6+t7 + pi/2);
+    lb14y = ls14y + r2*sin(t6+t7 + pi/2);
+    lf14x = ls14x + r2*cos(t6+t7 - pi/2);
+    lf14y = ls14y + r2*sin(t6+t7 - pi/2);
+    ls15x = ls9x + 6/8*(ls17x - ls9x);
+    ls15y = ls9y + 6/8*(ls17y - ls9y);
+    lb15x = ls15x + r2*cos(t6+t7 + pi/2);
+    lb15y = ls15y + r2*sin(t6+t7 + pi/2);
+    lf15x = ls15x + r2*cos(t6+t7 - pi/2);
+    lf15y = ls15y + r2*sin(t6+t7 - pi/2);
+    ls16x = ls9x + 7/8*(ls17x - ls9x);
+    ls16y = ls9y + 7/8*(ls17y - ls9y);
+    lb16x = ls16x + r2*cos(t6+t7 + pi/2);
+    lb16y = ls16y + r2*sin(t6+t7 + pi/2);
+    lf16x = ls16x + r2*cos(t6+t7 - pi/2);
+    lf16y = ls16y + r2*sin(t6+t7 - pi/2);
+
+
+else
+    ls1x = 0;
+    ls1y = 0;
+    lb1x = 0;
+    lb1y = 0;
+    lf1x = 0;
+    lf1y = 0;
+
+    ls9x = 0;
+    ls9y = 0;
+    lb9x = 0;
+    lb9y = 0;
+    lf9x = 0;
+    lf9y = 0;
+
+    ls17x = 0;
+    ls17y = 0;
+    lb17x = 0;
+    lb17y = 0;
+    lf17x = 0;
+    lf17y = 0;
+    
+    ls2x = 0;
+    ls2y = 0;
+    lb2x = 0;
+    lb2y = 0;
+    lf2x = 0;
+    lf2y = 0;
+    ls3x = 0;
+    ls3y = 0;
+    lb3x = 0;
+    lb3y = 0;
+    lf3x = 0;
+    lf3y = 0;
+    ls4x = 0;
+    ls4y = 0;
+    lb4x = 0;
+    lb4y = 0;
+    lf4x = 0;
+    lf4y = 0;
+    ls5x = 0;
+    ls5y = 0;
+    lb5x = 0;
+    lb5y = 0;
+    lf5x = 0;
+    lf5y = 0;
+    ls6x = 0;
+    ls6y = 0;
+    lb6x = 0;
+    lb6y = 0;
+    lf6x = 0;
+    lf6y = 0;
+    ls7x = 0;
+    ls7y = 0;
+    lb7x = 0;
+    lb7y = 0;
+    lf7x = 0;
+    lf7y = 0;
+    ls8x = 0;
+    ls8y = 0;
+    lb8x = 0;
+    lb8y = 0;
+    lf8x = 0;
+    lf8y = 0;
+    ls10x = 0;
+    ls10y = 0;
+    lb10x = 0;
+    lb10y = 0;
+    lf10x = 0;
+    lf10y = 0;
+    ls11x = 0;
+    ls11y = 0;
+    lb11x = 0;
+    lb11y = 0;
+    lf11x = 0;
+    lf11y = 0;
+    ls12x = 0;
+    ls12y = 0;
+    lb12x = 0;
+    lb12y = 0;
+    lf12x = 0;
+    lf12y = 0;
+    ls13x = 0;
+    ls13y = 0;
+    lb13x = 0;
+    lb13y = 0;
+    lf13x = 0;
+    lf13y = 0;
+    ls14x = 0;
+    ls14y = 0;
+    lb14x = 0;
+    lb14y = 0;
+    lf14x = 0;
+    lf14y = 0;
+    ls15x = 0;
+    ls15y = 0;
+    lb15x = 0;
+    lb15y = 0;
+    lf15x = 0;
+    lf15y = 0;
+    ls16x = 0;
+    ls16y = 0;
+    lb16x = 0;
+    lb16y = 0;
+    lf16x = 0;
+    lf16y = 0;
+
+end
+%%%%%%%%%%%%%%%%%
+
+
 
 y = [s1x s1y; s2x s2y; s3x s3y; s4x s4y; s5x s5y; s6x s6y; s7x s7y; s8x s8y; ...
      s9x s9y; s10x s10y; s11x s11y; s12x s12y; s13x s13y; s14x s14y; s15x s15y; s16x s16y; ...
@@ -359,5 +621,14 @@ y = [s1x s1y; s2x s2y; s3x s3y; s4x s4y; s5x s5y; s6x s6y; s7x s7y; s8x s8y; ...
      b17x b17y; b18x b18y; b19x b19y; b20x b20y; b21x b21y; b22x b22y; b23x b23y; b24x b24y; ...
      b25x b25y; b26x b26y; b27x b27y; b28x b28y; b29x b29y; b30x b30y; b31x b31y; b32x b32y; ...
      b33x b33y; b34x b34y; b35x b35y; b36x b36y; b37x b37y; b38x b38y; b39x b39y; b40x b40y; ...
-     b41x b41y ];
+     b41x b41y; ...
+     ls1x ls1y; ls2x ls2y; ls3x ls3y; ls4x ls4y; ls5x ls5y; ls6x ls6y; ls7x ls7y; ls8x ls8y; ...
+     ls9x ls9y; ls10x ls10y; ls11x ls11y; ls12x ls12y; ls13x ls13y; ls14x ls14y; ls15x ls15y; ls16x ls16y; ...
+     ls17x ls17y; ...
+     lf1x lf1y; lf2x lf2y; lf3x lf3y; lf4x lf4y; lf5x lf5y; lf6x lf6y; lf7x lf7y; lf8x lf8y; ...
+     lf9x lf9y; lf10x lf10y; lf11x lf11y; lf12x lf12y; lf13x lf13y; lf14x lf14y; lf15x lf15y; lf16x lf16y; ...
+     lf17x lf17y; ...
+     lb1x lb1y; lb2x lb2y; lb3x lb3y; lb4x lb4y; lb5x lb5y; lb6x lb6y; lb7x lb7y; lb8x lb8y; ...
+     lb9x lb9y; lb10x lb10y; lb11x lb11y; lb12x lb12y; lb13x lb13y; lb14x lb14y; lb15x lb15y; lb16x lb16y; ...
+     lb17x lb17y; ];
    
