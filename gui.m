@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 11-Jun-2015 00:59:06
+% Last Modified by GUIDE v2.5 11-Jun-2015 13:24:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -68,32 +68,25 @@ hold on;
 
 % Single person's features
 handles.single_stature = 170;
+handles.single_weight = 5;
 handles.single_gender = 1;  % male: 1, female: 2
 handles.single_age = 25;
-handles.single_target_weight = 5;
 % Multiple persons' features
 handles.multiple_population = 100;
 handles.multiple_gender = 1;  % male: 1, female: 2, all: 3
 handles.multiple_age_min = 25;
 handles.multiple_age_max = 50;
-handles.multiple_target_weight = 5;
+% Flag for currently analyzing for multiple persons or not
+handles.isMultiple = 0;   % If analyzing for multiple persons: 1
 
+% Matrices for obstacles and the target info
 handles.Bplots = [];
 handles.B = [];
 handles.Tplots = [];
 handles.T = [];
 
-% handles.peaks = peaks(35);
-% handles.membrane = membrane;
-% [x, y] = meshgrid(-8:0.5:8);
-% r = sqrt(x.^2 + y.^2) + eps;
-% sinc = sin(r)./r;
-% handles.sinc = sinc;
-% handles.current_data = handles.peaks;
-% surf(handles.current_data);
-
-set(handles.multiple_panel, 'Visible', 'off');
-set(handles.single_panel, 'Visible', 'on');
+%set(handles.multiple_panel, 'Visible', 'off');
+%set(handles.single_panel, 'Visible', 'on');
 
 % Choose default command line output for gui
 handles.output = hObject;
@@ -111,10 +104,10 @@ axesHandle  = get(objectHandle, 'Parent');
 %coordinates = get(axesHandle,'CurrentPoint'); 
 %coordinates = coordinates(1,1:2);
 if flag == 0
-    new_message = sprintf('%s\n%s', '?¥ì?ë¬¼ì? ?????? ?¶ì? ì§?????´ë¦­??????.',...
-                                     '??©´ ë°?¹¥ìª½ì? ?´ë¦­??©´ ì¢???©ë???');
+    new_message = sprintf('%s\n%s', '?ï¿½ï¿½?ë¬¼ï¿½? ?????? ?ï¿½ï¿½? ï¿½?????ï¿½ë¦­??????.',...
+                                     '??ï¿½ï¿½ ï¿½?ï¿½ï¿½ìª½ï¿½? ?ï¿½ë¦­??ï¿½ï¿½ ï¿½???ï¿½ï¿½???');
 else
-    new_message = sprintf('%s', 'ëª©í?ë¬¼ì? ?????? ?¶ì? ì§?????´ë¦­??????.');
+    new_message = sprintf('%s', 'ëª©ï¿½?ë¬¼ï¿½? ?????? ?ï¿½ï¿½? ï¿½?????ï¿½ë¦­??????.');
 end
 set(handles.message_text, 'String', new_message);
 
@@ -277,8 +270,8 @@ AxesClickCallback(hObject, eventdata, handles, 1)
 
 
 % --- Executes during object creation, after setting all properties.
-function single_target_weight_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to single_target_weight_edit (see GCBO)
+function single_weight_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to single_weight_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -288,14 +281,14 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-function single_target_weight_edit_Callback(hObject, eventdata, handles)
+function single_weight_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to edit5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-handles.single_target_weight = str2double(get(handles.single_target_weight_edit, 'string'));
+handles.single_weight = str2double(get(handles.single_weight_edit, 'string'));
 
 
 % --- Executes when selected object is changed in uibuttongroup2.
@@ -308,9 +301,11 @@ switch hObject
     case handles.single_radiobutton
         set(handles.multiple_panel, 'Visible', 'off');
         set(handles.single_panel, 'Visible', 'on');
+        handles.isMultiple = 0;
     case handles.multiple_radiobutton
         set(handles.single_panel, 'Visible', 'off');
         set(handles.multiple_panel, 'Visible', 'on');
+        handles.isMultiple = 1;
 end
 
 
@@ -387,32 +382,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
-function multiple_target_weight_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to multiple_target_weight_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of multiple_target_weight_edit as text
-%        str2double(get(hObject,'String')) returns contents of multiple_target_weight_edit as a double
-handles.multiple_target_weight = str2double(get(handles.multiple_target_weight_edit, 'string'));
-
-
-
-% --- Executes during object creation, after setting all properties.
-function multiple_target_weight_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to multiple_target_weight_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
 function multiple_age_max_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to multiple_age_max_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -442,15 +411,25 @@ function start_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+p1_L =   45; p1_U =  90; 
+p2_L =    0; p2_U = 160; 
+p3_L = -160; p3_U =   0; 
+p4_L = -180; p4_U = -20; 
+p5_L =   30; p5_U = 180; 
+
 %helpdlg(sprintf('%d, %d', handles.T(1), handles.T(2)));
-T = handles.T(1:2);
-T_center = [T(1)+5 T(2)+5];
+X_tar = handles.T(1,1);
+Y_tar = handles.T(1,2);
+T = [X_tar Y_tar];
+T_center = [X_tar+5 Y_tar+5];
+load_tar = 0;
+
 
 %% Loading the relevant cell
 XX = T(1);
 YY = T(2);
 
-cell_name = ['CELL_X' XX 'Y' YY];
+cell_name = ['CELL_X' num2str(XX) 'Y' num2str(YY)];
 cell_name = strrep(fullfile('CELL',cell_name), '-', 'N');
 
 postures = load(cell_name);
@@ -464,174 +443,182 @@ for i=1:21
 end
 postures = A_sorted;
 
-% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½ï¿½ï¿½ï¿½
+% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½
 adjustment_methods = [2 3 4 5];
 
 % ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
-links = xlsread('link.xlsx');
-links_length = length(links);
-
-
-%% ï¿½ï¿½ï¿½à±¸ï¿½ï¿½  *** FIXME
-for user=user_id
-    test_data = links(user_id, :);
-    test_L = test_data(1:6)/10;
-    test_R = test_data(8:12)/20;       
-    
-    result_postures = [];
-    
-    num_of_target_touch = 0;
-    start_time = clock;
-    
-    is_over = -1;
-    for i=1:numP
-        if is_over == 0
-            break;
-        end
-        
-        %% ï¿½Ë»ï¿½ ï¿½Ü°ï¿½
-        training_posture = postures(i,1:7); % theta 6,7 ï¿½ß°ï¿½
-        training_w = postures(i, 16:20);
-        training_length = postures(i, 10:15);
-        
-        % potential ï¿½ï¿½ï¿½ï¿½(ï¿½Ë»ï¿½ ï¿½ï¿½ ï¿½ï¿½Å¹ï¿½ï¿½ï¿?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
-        potential = POTENTIAL2(training_length, training_posture, B, C, training_w);
-        if potential ~= 0
-            continue;
-        end
-        
-        %% ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½(ï¿½ï¿½ï¿½ï¿½)
-        for adjustment_method = adjustment_methods
-            result_posture = [postures(i, :) test_L zeros(1,13)];
-            result_posture(29) = adjustment_method;
-            
-            switch adjustment_method
-                case 2
-                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 2);
-                    if posture ==1
-                        result_posture(30) = 0;
-                        result_postures = [result_postures; result_posture];
-                        continue;
-                    end
-                case 3
-                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 3);
-                    if posture ==1
-                        result_posture(30) = 0;
-                        result_postures = [result_postures; result_posture];
-                        continue;
-                    end
-                case 4
-                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 4);
-                    if posture ==1
-                        result_posture(30) = 0;
-                        result_postures = [result_postures; result_posture];
-                        continue;
-                    end
-                case 5
-                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 5);
-                    if posture ==1
-                        result_posture(30) = 0;
-                        result_postures = [result_postures; result_posture];
-                        continue;
-                    end
-            end
-            %% ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¾ï¿½; ï¿½ï¿½Ö¹ï¿?ï¿½ï¿½ï¿½ï¿½, BOS ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
-            
-            % ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-            neck = NECK(test_L, posture, T_center);
-            if neck == -1000
-                result_posture(30) = 0;
-                result_postures = [result_postures; result_posture];
-                continue
-            else
-                posture(8) = neck;
-            end
-            
-            % ï¿½ï¿½Ö¹ï¿½ï¿½ï¿?ï¿½ï¿½ï¿½ï¿½ï¿?ï¿½Ä¾ï¿½
-            potential = POTENTIAL2(test_L, posture, B, C, test_R);
-            if (potential == 0)
-                result_posture(30) = 1;
-            else
-                result_posture(30) = 0;
-                result_postures = [result_postures; result_posture];
-                continue
-            end
-            
-            % BOS ï¿½ï¿½ï¿½ï¿½
-            COM_LOC = COM_LOCATION(test_L,posture);
-            HAND_LOC = HAND_LOCATION(test_L,posture);
-            SHOULDER_LOC = SHOULDER_LOCATION(test_L,posture);
-            H_S_DIST = norm(HAND_LOC - SHOULDER_LOC);
-            
-            
-            % ï¿½Ù¸ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ BOSï¿½ï¿½ï¿?ï¿½ß°ï¿½
-            if posture(6) ~=0 && posture(7) ~=0
-                if COM_LOC(3) == 0 || (COM_LOC(1) > COM_LOC(3)+15) || (COM_LOC(1) < -5) || (H_S_DIST < 20) || (HAND_LOC(2)<=0)
-                    result_posture(30) = 0;
-                    result_postures = [result_postures; result_posture];
-                else
-                    result_posture(30) = 1;
-                end
-                
-            else
-                if ((COM_LOC(1)>15) || (COM_LOC(1)<-5) || (HAND_LOC(1)<5) || (H_S_DIST < 20) || (HAND_LOC(2)<=0))
-                    result_posture(30) = 0;
-                    result_postures = [result_postures; result_posture];
-                    continue
-                else
-                    result_posture(30) = 1;
-                end
-            end
-            
-            % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-            if (posture(1)>p1_L && posture(1)<p1_U && posture(2)>p2_L && posture(2)<p2_U && posture(3)>p3_L && posture(3)<p3_U && posture(4)>p4_L && posture(4)<p4_U && posture(5)>p5_L && posture(5)<p5_U)
-                result_posture(30) = 1;
-            else
-                result_posture(30) = 0;
-                result_postures = [result_postures; result_posture];
-                continue
-            end
-            result_posture(31:38) = posture;
-            
-            
-            %% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ (39)
-            reba_score = REBA(test_L, posture, Y_tar, load_tar);
-            result_posture(39) = reba_score;
-            
-            %% ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ (40)
-            torq = sum(abs(JOINT_TORQUE(test_L,posture)));
-            result_posture(40) = torq;
-            
-            %% visibility ï¿½ß°ï¿½ (41)
-            vs_pt = VISIBILITY(test_L, posture, test_R, B, T_center, C);
-            if vs_pt > 0
-                visibility = 0
-            elseif vs_pt == 0
-                visibility = 1
-            end
-            result_posture(41) = visibility;
-                        
-            result_postures = [result_postures; result_posture]; 
-            
-            VISUALIZE(1, test_L, posture, test_R);
-
-            num_of_target_touch = num_of_target_touch+1;
-            
-            is_over = 0;
-            break;
-            
-        end
-        
-    end
-    
-    execution_time = etime(clock, start_time);
-    title_str=[num2str(num_of_target_touch), ' postures, ', num2str(execution_time), ' s'];
-    title(title_str);
-    
-    % exelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-    %     filename = ['result_stature_', num2str(user_id), '_boundary_', num2str(boundary)];
-    %     xlswrite(filename, result_postures);
+if handles.isMultiple == 0
+    % Pick a single link row
+    links = PICK_PERSON(handles.single_gender, ...
+        handles.single_age, handles.single_stature, ...
+        handles.single_weight);
+else  % handles.isMultiple == 1
+    % Pick multiple link rows
+    links = PICK_PEOPLE(handles.multiple_population, ...
+        handles.multiple_gender, handles.multiple_age_min, ...
+        handles.multiple_age_max);
 end
 
+%links = xlsread('link.xlsx');
+%links_length = length(links);
 
 
+%% ï¿½ï¿½ï¿½à±¸ï¿½ï¿½
+test_data = links;
+test_L = test_data(6:11)/10;
+test_R = test_data(12:16)/20;       
+
+result_postures = [];
+
+num_of_target_touch = 0;
+start_time = clock;
+B = handles.B;
+C = [];
+is_over = -1;
+for i=1:numP
+    if is_over == 0
+        break;
+    end
+
+    %% ï¿½Ë»ï¿½ ï¿½Ü°ï¿½
+    training_posture = postures(i,1:7); % theta 6,7 ï¿½ß°ï¿½
+    training_w = postures(i, 16:20);
+    training_length = postures(i, 10:15);
+
+    % potential ï¿½ï¿½ï¿½ï¿½(ï¿½Ë»ï¿½ ï¿½ï¿½ ï¿½ï¿½Å¹ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    potential = POTENTIAL2(training_length, training_posture, B, C, training_w);
+    if potential ~= 0
+        continue;
+    end
+
+    %% ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½(ï¿½ï¿½ï¿½ï¿½)
+    for adjustment_method = adjustment_methods
+        result_posture = [postures(i, :) test_L zeros(1,13)];
+        result_posture(29) = adjustment_method;
+
+        switch adjustment_method
+            case 2
+                posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 2);
+                if posture ==1
+                    result_posture(30) = 0;
+                    result_postures = [result_postures; result_posture];
+                    continue;
+                end
+            case 3
+                posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 3);
+                if posture ==1
+                    result_posture(30) = 0;
+                    result_postures = [result_postures; result_posture];
+                    continue;
+                end
+            case 4
+                posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 4);
+                if posture ==1
+                    result_posture(30) = 0;
+                    result_postures = [result_postures; result_posture];
+                    continue;
+                end
+            case 5
+                posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 5);
+                if posture ==1
+                    result_posture(30) = 0;
+                    result_postures = [result_postures; result_posture];
+                    continue;
+                end
+        end
+        %% ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¾ï¿½; ï¿½ï¿½Ö¹ï¿½?ï¿½ï¿½ï¿½ï¿½, BOS ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+
+        % ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        neck = NECK(test_L, posture, T_center);
+        if neck == -1000
+            result_posture(30) = 0;
+            result_postures = [result_postures; result_posture];
+            continue
+        else
+            posture(8) = neck;
+        end
+
+        % ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½Ä¾ï¿½
+        potential = POTENTIAL2(test_L, posture, B, C, test_R);
+        if (potential == 0)
+            result_posture(30) = 1;
+        else
+            result_posture(30) = 0;
+            result_postures = [result_postures; result_posture];
+            continue
+        end
+
+        % BOS ï¿½ï¿½ï¿½ï¿½
+        COM_LOC = COM_LOCATION(test_L,posture);
+        HAND_LOC = HAND_LOCATION(test_L,posture);
+        SHOULDER_LOC = SHOULDER_LOCATION(test_L,posture);
+        H_S_DIST = norm(HAND_LOC - SHOULDER_LOC);
+
+
+        % ï¿½Ù¸ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ BOSï¿½ï¿½ï¿½?ï¿½ß°ï¿½
+        if posture(6) ~=0 && posture(7) ~=0
+            if COM_LOC(3) == 0 || (COM_LOC(1) > COM_LOC(3)+15) || (COM_LOC(1) < -5) || (H_S_DIST < 20) || (HAND_LOC(2)<=0)
+                result_posture(30) = 0;
+                result_postures = [result_postures; result_posture];
+            else
+                result_posture(30) = 1;
+            end
+
+        else
+            if ((COM_LOC(1)>15) || (COM_LOC(1)<-5) || (HAND_LOC(1)<5) || (H_S_DIST < 20) || (HAND_LOC(2)<=0))
+                result_posture(30) = 0;
+                result_postures = [result_postures; result_posture];
+                continue
+            else
+                result_posture(30) = 1;
+            end
+        end
+
+        % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        if (posture(1)>p1_L && posture(1)<p1_U && posture(2)>p2_L && posture(2)<p2_U && posture(3)>p3_L && posture(3)<p3_U && posture(4)>p4_L && posture(4)<p4_U && posture(5)>p5_L && posture(5)<p5_U)
+            result_posture(30) = 1;
+        else
+            result_posture(30) = 0;
+            result_postures = [result_postures; result_posture];
+            continue
+        end
+        result_posture(31:38) = posture;
+
+
+        %% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ (39)
+        reba_score = REBA(test_L, posture, Y_tar, load_tar);
+        result_posture(39) = reba_score;
+
+        %% ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ (40)
+        torq = sum(abs(JOINT_TORQUE(test_L,posture)));
+        result_posture(40) = torq;
+
+        %% visibility ï¿½ß°ï¿½ (41)
+        vs_pt = VISIBILITY(test_L, posture, test_R, B, T_center, C);
+        if vs_pt > 0
+            visibility = 0;
+        elseif vs_pt == 0
+            visibility = 1;
+        end
+        result_posture(41) = visibility;
+
+        result_postures = [result_postures; result_posture]; 
+
+        VISUALIZE(1, test_L, posture, test_R);
+
+        num_of_target_touch = num_of_target_touch+1;
+
+        is_over = 0;
+        break;
+
+    end
+
+end
+
+execution_time = etime(clock, start_time);
+title_str=[num2str(num_of_target_touch), ' postures, ', num2str(execution_time), ' s'];
+title(title_str);
+
+% exelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+%     filename = ['result_stature_', num2str(user_id), '_boundary_', num2str(boundary)];
+%     xlswrite(filename, result_postures);
