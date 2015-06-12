@@ -38,7 +38,7 @@ while num_registered_posture <= num_iteration
             P = ONE_MORE_LEG(L,P); % 앞다리 만들기
             COM_LOC = COM_LOCATION(L,P); % 다리 두 개일 때 COM 계산
             
-            if ((P(6)~=0) & (P(7)~=0) & (COM_LOC(1)<=COM_LOC(3)+15) & (COM_LOC(1)>=-5))
+            if ((P(6)~=0) & (P(7)~=0) & (COM_LOC(1)<=COM_LOC(3)+15) & (COM_LOC(1)>=-5) & COM_LOC(3)>=20)
                 num_two_leg_posture = num_two_leg_posture + 1;
                 break;
             else
