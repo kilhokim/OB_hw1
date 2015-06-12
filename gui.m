@@ -146,7 +146,15 @@ if flag == 0
             end
         end
     end
-else
+else    % flag == 1
+    num_postures = transpose(xlsread('cell_posture.xlsx', 1));
+    colormap(flipud(pink));
+    im = imagesc([handles.min_x handles.max_x], [handles.min_y handles.max_y], ...
+            num_postures);
+    set(gca, 'Xtick', -60:10:140);
+    set(gca, 'Ytick', 0:10:200);
+    grid on;
+
     coordinates = ginput(1);
     curr_x = floor(coordinates(1)/10)*10;
     curr_y = floor(coordinates(2)/10)*10;
@@ -161,6 +169,7 @@ else
         handles.Tplot = TPLOT(new_T);
         handles.T = new_T;
     end
+    delete(im)
 end
 guidata(objectHandle,handles);
 
@@ -215,6 +224,8 @@ function single_stature_edit_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
 handles.single_stature = str2double(get(handles.single_stature_edit, 'string'));
+guidata(hObject,handles);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -237,6 +248,7 @@ function single_age_edit_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
 handles.single_age = str2double(get(handles.single_age_edit, 'string'));
+guidata(hObject,handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -259,6 +271,7 @@ function single_gender_popupmenu_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
 handles.single_gender = get(handles.single_gender_popupmenu, 'Value');
+guidata(hObject,handles);
 
 
 % --- Executes on button press in draw_target_button.
@@ -289,6 +302,7 @@ function single_weight_edit_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
 handles.single_weight = str2double(get(handles.single_weight_edit, 'string'));
+guidata(hObject,handles);
 
 
 % --- Executes when selected object is changed in uibuttongroup2.
@@ -320,6 +334,7 @@ function multiple_population_edit_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of multiple_population_edit as text
 %        str2double(get(hObject,'String')) returns contents of multiple_population_edit as a double
 handles.multiple_population = str2double(get(handles.multiple_population_edit, 'string'));
+guidata(hObject,handles);
 
 
 
@@ -345,6 +360,7 @@ function multiple_age_min_edit_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of multiple_age_min_edit as text
 %        str2double(get(hObject,'String')) returns contents of multiple_age_min_edit as a double
 handles.multiple_age_min = str2double(get(handles.multiple_age_min_edit, 'string'));
+guidata(hObject,handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -369,6 +385,7 @@ function multiple_gender_popupmenu_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns multiple_gender_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from multiple_gender_popupmenu
 handles.multiple_gender = str2double(get(handles.multiple_gender_popupmenu, 'string'));
+guidata(hObject,handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -392,6 +409,7 @@ function multiple_age_max_edit_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of multiple_age_max_edit as text
 %        str2double(get(hObject,'String')) returns contents of multiple_age_max_edit as a double
 handles.multiple_age_max = str2double(get(handles.multiple_age_max_edit, 'string'));
+guidata(hObject,handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -482,9 +500,14 @@ end
 additional_w = xlsread('additional_w.xlsx');
 
 num_of_target_touch = 0;
-num_persons = size(links);
+tmp = size(links);
+num_persons = tmp(1);
+
+REBAs = [];
+visibilities = [];
+torques = [];
 %% Run analysis
-for p = 1:num_persons(1)
+for p = 1:num_persons
     test_data = links(p,:);
     test_L = test_data(6:11)/10;
     test_R = test_data(12:16)/20;       
@@ -495,8 +518,6 @@ for p = 1:num_persons(1)
     B = handles.B;
     C = [];
     is_over = -1;
-
-    %rebas = []
 
     for i=1:numP
         if is_over == 0
@@ -519,36 +540,14 @@ for p = 1:num_persons(1)
             result_posture = [postures(i, :) test_L zeros(1,13)];
             result_posture(29) = adjustment_method;
 
-            switch adjustment_method
-                case 2
-                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 2);
-                    if posture ==1
-                        result_posture(30) = 0;
-                        result_postures = [result_postures; result_posture];
-                        continue;
-                    end
-                case 3
-                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 3);
-                    if posture ==1
-                        result_posture(30) = 0;
-                        result_postures = [result_postures; result_posture];
-                        continue;
-                    end
-                case 4
-                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 4);
-                    if posture ==1
-                        result_posture(30) = 0;
-                        result_postures = [result_postures; result_posture];
-                        continue;
-                    end
-                case 5
-                    posture = ADJUSTMENT_POSTURE(training_posture, training_length, test_L, 5);
-                    if posture ==1
-                        result_posture(30) = 0;
-                        result_postures = [result_postures; result_posture];
-                        continue;
-                    end
+            posture = ADJUSTMENT_POSTURE(training_posture, training_length, ...
+                                         test_L, adjustment_method);
+            if posture ==1
+                result_posture(30) = 0;
+                result_postures = [result_postures; result_posture];
+                continue;
             end
+            
             %% Adjustment process: Determine Success/Failure
 
             % Improve neck angle
@@ -563,7 +562,7 @@ for p = 1:num_persons(1)
 
             % Calculate potential
             potential = POTENTIAL2(test_L, posture, B, C, test_R);
-            if (potential == 0)
+            if potential == 0
                 result_posture(30) = 1;
             else
                 result_posture(30) = 0;
@@ -630,11 +629,11 @@ for p = 1:num_persons(1)
             a_w = additional_w(additional_w(:,1)==p, 2:end)/10;
 
             if handles.isMultiple == 0
-                rannum = randi(100);
-                cmap = hsv(100);
+                rannum = randi(numP);
+                cmap = hsv(numP);
                 VISUALIZE(1, test_L, posture, test_R, a_w, cmap(rannum,:));
             else
-                cmap = hsv(100);
+                cmap = hsv(handles.multiple_population);
                 VISUALIZE(1, test_L, posture, test_R, a_w, cmap(p,:));
             end      
 
@@ -644,20 +643,50 @@ for p = 1:num_persons(1)
                 is_over = 0;
             end
 
-            % rebas = [rebas; reba_score];
+            REBAs = [REBAs; reba_score];
+            visibilities = [visibilities; visibility];
+            torques = [torques; torq];
 
             break;
 
-        end
-
-
+        end 
     end
+end
+execution_time = etime(clock, start_time);
+title_str=[num2str(num_of_target_touch), ' postures, ', num2str(execution_time), ' s'];
+title(title_str);
 
-    execution_time = etime(clock, start_time);
-    title_str=[num2str(num_of_target_touch), ' postures, ', num2str(execution_time), ' s'];
-    title(title_str);
+if num_of_target_touch == 0
+    max_count = 1;
+else
+    max_count = num_of_target_touch;
 end
 
+
+%% Draw histograms
+figure(2)
+% REBA scores histogram
+subplot(1,3,1)
+hist(REBAs, 10)
+xlabel('REBA score')
+ylabel('count')
+title('REBA score for postures')
+axis([0 10 0 max_count])
+% Torques histogram
+subplot(1,3,2)
+hist(torques)
+xlabel('torque')
+ylabel('count')
+title('Torque for postures')
+% Visibilities histogram
+subplot(1,3,3)
+hist(visibilities, 2)
+xlabel('Visibility')
+ylabel('count')
+title('Visibility for postures')
+axis([0 1 0 max_count])
+
+fprintf('test');
 % exel�� ����
 %     filename = ['result_stature_', num2str(user_id), '_boundary_', num2str(boundary)];
 %     xlswrite(filename, result_postures);

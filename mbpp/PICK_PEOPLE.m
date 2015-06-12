@@ -14,5 +14,5 @@ end
 pop_filtered_rows = pop(idx,:);
 shuffled_rows = pop_filtered_rows(randperm(length(pop_filtered_rows)), :);
 
-rows = shuffled_rows(1:num);
+rows = shuffled_rows(1:num,:);
 end
