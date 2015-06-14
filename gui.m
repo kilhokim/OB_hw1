@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 12-Jun-2015 13:05:29
+% Last Modified by GUIDE v2.5 14-Jun-2015 16:46:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -82,11 +82,22 @@ handles.isMultiple = 0;   % If analyzing for multiple persons: 1
 % Matrices for obstacles and the target info
 handles.Bplots = [];
 handles.B = [];
-handles.Tplots = [];
+handles.Tplot = [];
 handles.T = [];
 
+% Matrices for posture info
+handles.posture_plots = [];
+
 set(handles.multiple_panel, 'Visible', 'off');
-%set(handles.single_panel, 'Visible', 'on');
+set(handles.single_panel, 'Visible', 'on');
+
+num_postures = transpose(xlsread('cell_posture.xlsx', 1));
+colormap(flipud(pink));
+handles.im = imagesc([handles.min_x handles.max_x], ...
+             [handles.min_y handles.max_y], ...
+             num_postures, 'AlphaData', 0.5);
+set(handles.im, 'visible', 'off');
+
 
 % Choose default command line output for gui
 handles.output = hObject;
@@ -100,14 +111,19 @@ guidata(hObject, handles);
 
 
 function AxesClickCallback(objectHandle, eventData, handles, flag)
-axesHandle  = get(objectHandle, 'Parent');
+% Temporarily disable the buttons
+set(handles.draw_obs_button,'Enable','off');
+set(handles.draw_target_button,'Enable','off');
+set(handles.start_button,'Enable','off');
+set(handles.reset_posture_button,'Enable','off');
+set(handles.reset_target_obs_button,'Enable','off');
 %coordinates = get(axesHandle,'CurrentPoint'); 
 %coordinates = coordinates(1,1:2);
 if flag == 0
-    new_message = sprintf('%s\n%s', '?ï¿½ï¿½?ë¬¼ï¿½? ?????? ?ï¿½ï¿½? ï¿?????ï¿½ë¦­??????.',...
-                                     '??ï¿½ï¿½ ï¿?ï¿½ï¿½ìª½ï¿½? ?ï¿½ë¦­??ï¿½ï¿½ ï¿???ï¿½ï¿½???');
+    new_message = sprintf('%s\n%s', 'Click cells where you want to locate obstacles.',...
+                                     'When you''re done, click outside of the axes');
 else
-    new_message = sprintf('%s', 'ëª©ï¿½?ë¬¼ï¿½? ?????? ?ï¿½ï¿½? ï¿?????ï¿½ë¦­??????.');
+    new_message = sprintf('%s', 'Click a cell where you want to locate target.');
 end
 set(handles.message_text, 'String', new_message);
 
@@ -147,14 +163,17 @@ if flag == 0
         end
     end
 else    % flag == 1
-    num_postures = transpose(xlsread('cell_posture.xlsx', 1));
-    colormap(flipud(pink));
-    im = imagesc([handles.min_x handles.max_x], [handles.min_y handles.max_y], ...
-            num_postures);
-    set(gca, 'Xtick', -60:10:140);
-    set(gca, 'Ytick', 0:10:200);
-    grid on;
-
+%     num_postures = transpose(xlsread('cell_posture.xlsx', 1));
+%     colormap(flipud(pink));
+%     im = imagesc([handles.min_x handles.max_x], ...
+%                  [handles.min_y handles.max_y], ...
+%                  num_postures, 'AlphaData', 0.5);
+    set(handles.im, 'visible', 'on');
+    % set(im, 'AlphaData', 0.5);
+    %set(im, 'Xtick', -60:10:140);
+    %set(im, 'Ytick', 0:10:200);
+    %grid on;
+    
     coordinates = ginput(1);
     curr_x = floor(coordinates(1)/10)*10;
     curr_y = floor(coordinates(2)/10)*10;
@@ -169,8 +188,15 @@ else    % flag == 1
         handles.Tplot = TPLOT(new_T);
         handles.T = new_T;
     end
-    delete(im)
+    %delete(im);
+    set(handles.im, 'Visible', 'off');
 end
+% Re-enable the buttons
+set(handles.draw_obs_button,'Enable','on');
+set(handles.draw_target_button,'Enable','on');
+set(handles.start_button,'Enable','on');
+set(handles.reset_posture_button,'Enable','on');
+set(handles.reset_target_obs_button,'Enable','on');
 guidata(objectHandle,handles);
 
 
@@ -425,17 +451,40 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in reset_button.
-function reset_button_Callback(hObject, eventdata, handles)
-% hObject    handle to reset_button (see GCBO)
+% --- Executes on button press in reset_target_obs_button.
+function reset_target_obs_button_Callback(hObject, eventdata, handles)
+% hObject    handle to reset_target_obs_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 title('Total possible postures');
+for p = handles.Bplots
+    delete(p);
+end
+delete(handles.Tplot)
 handles.Bplots = [];
 handles.B = [];
-handles.Tplots = [];
+handles.Tplot = [];
 handles.T = [];
-cla();
+% cla();
+guidata(hObject, handles);
+
+
+% --- Executes on button press in reset_posture_button.
+function reset_posture_button_Callback(hObject, eventdata, handles)
+% hObject    handle to reset_posture_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+title('Total possible postures');
+tmp = size(handles.posture_plots);
+for i = 1:tmp(1)
+    for p = handles.posture_plots(i,:)
+        if p == -1
+            continue
+        end
+        delete(p);
+    end
+end
+handles.posture_plots = [];
 guidata(hObject, handles);
 
 
@@ -506,6 +555,7 @@ num_persons = tmp(1);
 REBAs = [];
 visibilities = [];
 torques = [];
+start_time = clock;
 %% Run analysis
 for p = 1:num_persons
     test_data = links(p,:);
@@ -514,7 +564,6 @@ for p = 1:num_persons
 
     result_postures = [];
 
-    start_time = clock;
     B = handles.B;
     C = [];
     is_over = -1;
@@ -631,11 +680,13 @@ for p = 1:num_persons
             if handles.isMultiple == 0
                 rannum = randi(numP);
                 cmap = hsv(numP);
-                VISUALIZE(1, test_L, posture, test_R, a_w, cmap(rannum,:));
+                curr_posture_plot = VISUALIZE(1, test_L, posture, test_R, a_w, cmap(rannum,:));
             else
                 cmap = hsv(handles.multiple_population);
-                VISUALIZE(1, test_L, posture, test_R, a_w, cmap(p,:));
-            end      
+                curr_posture_plot = VISUALIZE(1, test_L, posture, test_R, a_w, cmap(p,:));
+            end
+            
+            handles.posture_plots = [handles.posture_plots; curr_posture_plot];
 
             num_of_target_touch = num_of_target_touch+1;
 
@@ -667,7 +718,7 @@ end
 figure(2)
 % REBA scores histogram
 subplot(1,3,1)
-hist(REBAs, 10)
+hist(REBAs, 0:10)
 xlabel('REBA score')
 ylabel('count')
 title('REBA score for postures')
@@ -680,15 +731,14 @@ ylabel('count')
 title('Torque for postures')
 % Visibilities histogram
 subplot(1,3,3)
-hist(visibilities, 2)
-xlabel('Visibility')
-ylabel('count')
+v_per = round(sum(visibilities == 0)/length(visibilities)*100);
+nonv_per = round(sum(visibilities == 1)/length(visibilities)*100);
+pie([sum(visibilities == 0), sum(visibilities == 1)], ...
+    {['Not Visible (', num2str(v_per), '%)'], ...
+     ['Visible (', num2str(nonv_per), '%)']})
 title('Visibility for postures')
-axis([0 1 0 max_count])
 
-fprintf('test');
-% exelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-%     filename = ['result_stature_', num2str(user_id), '_boundary_', num2str(boundary)];
-%     xlswrite(filename, result_postures);
+guidata(hObject, handles);
 
+fprintf('complete\n');
 
