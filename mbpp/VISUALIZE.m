@@ -7,7 +7,7 @@ num_h = 8;
 num_f = 41;
 num_b = 41;
 
-% ´Ù¸® Ãß°¡
+% ï¿½Ù¸ï¿½ ï¿½ß°ï¿½
 num_ls = 17;
 num_lf = 17;
 num_lb = 17;
@@ -38,7 +38,7 @@ p4 = plot(b(1:num_b,1), b(1:num_b,2), '.-k');
 p5 = plot([f(1:num_f,1); b(num_b:-1:1,1)], [f(1:num_f,2); b(num_b:-1:1,2)], '.-', 'Color', cmap_row);
 
 
-% ´Ù¸® Ãß°¡ ±×¸®±â
+% ï¿½Ù¸ï¿½ ï¿½ß°ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
 if P(6)~=0 && P(7)~=0
     % plot(s(num_s+num_h+num_f+num_b+1:num_s+num_h+num_f+num_b+num_ls,1), s(num_s+num_h+num_f+num_b+1:num_s+num_h+num_f+num_b+num_ls,2), '.-k');
     % ADDED: Front body coordinates
@@ -55,7 +55,7 @@ end
 if exist('p6', 'var')
     posture_plots = [p1 p2 p3 p4 p5 p6];
 else
-    posture_plots = [p1 p2 p3 p4 p5 -1];
+    posture_plots = [p1 p2 p3 p4 p5 p5];
 end
 
 
